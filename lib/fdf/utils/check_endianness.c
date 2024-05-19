@@ -1,33 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   check_endianness.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abelov <abelov@student.42london.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/05/18 07:18:11 by abelov            #+#    #+#             */
-/*   Updated: 2024/05/18 07:18:12 by abelov           ###   ########.fr       */
+/*   Created: 2024/05/18 20:41:18 by abelov            #+#    #+#             */
+/*   Updated: 2024/05/18 20:41:20 by abelov           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <sysexits.h>
-#include "ft_fdf.h"
-
-int	main(int argc, char **argv)
+int	check_endianness(void)
 {
-	t_fdf_struct fdf;
+	int	a;
+	int	little_endian;
+	a = 0x11223344;
 
-	ft_printf("FdF Test Program\n");
-	check_endianness();
-
-	if (argc != 2) {
-		ft_printf("Usage: %s <filename>\n",*argv);
-		exit(EX_USAGE);
-	}
-	fdf.filename = argv[1];
-	fdf.map = NULL;
-	fdf.custom_colour_flag = 0;
-
-	load_data(&fdf);
-	return (EX_OK);
+	if (((unsigned char *) &a)[0] == 0x11)
+		little_endian = 1;
+	else
+		little_endian = 0;
+	return (little_endian);
 }

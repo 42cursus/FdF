@@ -35,11 +35,14 @@ CFLAGS			= $(MANDATORY_FLAGS) $(DEBUG_FLAGS) $(OPTIMIZE_FLAGS) $(INCLUDE_FLAGS)
 TEST_MAPS		=  ./resources/test_maps
 LIBFT_PATH		=  ./lib/ft
 LIBFT			=  $(LIBFT_PATH)/libft.a
-LIBX_PATH		=  ./lib/minilibx-linux
+LIBX_PATH		=  ./lib/mlx
 LIBX			=  $(LIBX_PATH)/libmlx.a
+LIBFDF_PATH		=  ./lib/fdf
+LIBFDF			=  $(LIBX_PATH)/libfdf.a
 
 
-LINK_FLAGS		:= -L $(LIBFT_PATH) -L $(LIBX_PATH) -lmlx -lft -lX11 -lXext -lm
+LINK_FLAGS		:= -L $(LIBFT_PATH) -L $(LIBX_PATH)  -L $(LIBFDF_PATH) \
+					-lfdf -lmlx -lft -lX11 -lXext -lm
 
 CTAGS			:= ctags
 RM				:= /bin/rm
@@ -48,11 +51,9 @@ BUILD_DIR		= build
 SRC_DIR			= src
 OBJ_DIR			= $(BUILD_DIR)/obj
 
-SRC_FS	 		:= main.c utils.c load_data.c \
-					draw_line_d.c \
-					data_convert.c \
-					my_str_to_wordtab.c \
-					on_expose.c
+SRC_FS	 		:= main.c \
+					load_data.c \
+					data_convert.c
 SRCS	 		:= $(SRC_FS:%.c=$(SRC_DIR)/%.c)
 OBJS			= $(SRCS:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
 
@@ -67,6 +68,9 @@ $(LIBFT):
 
 $(LIBX):
 		@make -C $(LIBX_PATH) -j8
+
+$(LIBFDF):
+		@make -C $(LIBFDF_PATH) -j8
 
 $(NAME): $(OBJS) $(LIBFT) $(LIBX)
 		$(CC) $(CFLAGS) $(INCLUDE_FLAGS) -o $@ $^  $(LINK_FLAGS)
@@ -85,11 +89,13 @@ clean:
 		@$(RM) -fr $(OBJ_DIR)
 		@make -C $(LIBFT_PATH) clean
 		@make -C $(LIBX_PATH) clean
+		@make -C $(LIBX_PATH) clean
 
 fclean: clean
 		@$(RM) -fr $(NAME) $(BUILD_DIR) a.out
 		@make -C $(LIBFT_PATH) fclean
 		@make -C $(LIBX_PATH) clean
+		@make -C $(LIBFDF_PATH) clean
 
 re: fclean all
 
@@ -97,6 +103,7 @@ norm:
 		@norminette $(SRCS)
 		@make -C $(LIBFT_PATH) norm
 		@make -C $(LIBX_PATH) norm
+		@make -C $(LIBFDF_PATH) norm
 
 .PHONY: all clean test re
 
