@@ -25,9 +25,9 @@
 NAME			:= FdF
 CC				:= cc
 INC_DIR			=  ./include
-INCLUDE_FLAGS	:= -I. -I $(INC_DIR) -I/usr/include
+INCLUDE_FLAGS	:= -I. -I$(INC_DIR) -I/usr/include -I/opt/X11/include -I/opt/X11/include/X11
 OPTIMIZE_FLAGS	:= -O0
-DEBUG_FLAGS		:= -g3 -gdwarf-3
+DEBUG_FLAGS		:= -g3 -gdwarf-2
 #MANDATORY_FLAGS	:= -Wall -Wextra -Werror
 MANDATORY_FLAGS	:=
 CFLAGS			= $(MANDATORY_FLAGS) $(DEBUG_FLAGS) $(OPTIMIZE_FLAGS) $(INCLUDE_FLAGS)
@@ -36,13 +36,16 @@ TEST_MAPS		=  ./resources/test_maps
 LIBFT_PATH		=  ./lib/ft
 LIBFT			=  $(LIBFT_PATH)/libft.a
 LIBX_PATH		=  ./lib/mlx
-LIBX			=  $(LIBX_PATH)/libmlx.a
+LIBX			=  $(LIBX_PATH)/libmlx_arm64.a
 LIBFDF_PATH		=  ./lib/fdf
 LIBFDF			=  $(LIBX_PATH)/libfdf.a
 
-
-LINK_FLAGS		:= -L $(LIBFT_PATH) -L $(LIBX_PATH)  -L $(LIBFDF_PATH) \
-					-lfdf -lmlx -lft -lX11 -lXext -lm
+LINK_FLAGS		:= -L /opt/homebrew/lib \
+					-L $(LIBFT_PATH) \
+					-L $(LIBFDF_PATH) \
+					-L $(LIBX_PATH) \
+					-lmlx_arm64 -lft -lX11 -lXext -lm -lfdf \
+					-framework OpenGL -framework AppKit
 
 CTAGS			:= ctags
 RM				:= /bin/rm

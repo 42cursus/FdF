@@ -14,7 +14,7 @@ NAME			:= libfdf.a
 CC				:= cc
 CFLAGS			:= -Wall -Wextra -Werror -Wimplicit
 INCLUDE_FLAGS	:= -I. -I./include -I/usr/include
-DEBUG_FLAGS		:= -g3 -gdwarf-3
+DEBUG_FLAGS		:= -g3 -gdwarf-2
 
 CTAGS			:= ctags
 LIB_COMMAND		:= ar rcs
@@ -31,7 +31,7 @@ BUILD_OBJS		= $(SRCS:%.c=$(BUILD_DIR)/%.o)
 ASM_FILES		= $(SRCS:.c=.s)
 
 all: $(NAME)
-	nm -fsA $(NAME)
+	nm -f sysv -A $(NAME)
 
 # We need this for the output to go in the right place.  It will default to
 # empty if make was configured to work with a cc that can't grok -c and -o

@@ -1,5 +1,5 @@
-[submodule "lib/mlx"]
-	path = lib/mlx
+[submodule "lib/mlx-linux"]
+	path = lib/mlx-linux
 	url = git@github.com:42Paris/minilibx-linux.git
 [submodule "lib/ft"]
 	path = lib/ft

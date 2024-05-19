@@ -15,6 +15,8 @@ resources/
 !/resources/maps.zip
 !/resources/program_screenshot.png
 gdb.txt
+lib/mlx
+lib/mlx-macos
 
 # From https://stackoverflow.com/questions/15606955/:
 # If you want to list all the files currently being tracked:
