@@ -51,10 +51,34 @@ set_target_properties(${MLX_LIB_NAME} PROPERTIES
         INTERFACE_SOURCES "${MLX_LIB_HEADERS}"
         INTERFACE_INCLUDE_DIRECTORIES "${MLX_LIB_DIR}")
 
+
+set(FDF_LIB_NAME fdf)
+set(FDF_LIB_FILENAME libfdf.a)
+set(FDF_LIB_DIR "${PROJECT_SOURCE_DIR}/lib/fdf")
+
+file(GLOB_RECURSE FDF_LIB_HEADERS "${FDF_LIB_DIR}/*.h")
+list(FILTER FDF_LIB_HEADERS EXCLUDE REGEX "${FDF_LIB_DIR}/test/*" )
+file(GLOB_RECURSE FDF_LIB_SOURCES "${FDF_LIB_DIR}/*.c")
+list(FILTER FDF_LIB_SOURCES EXCLUDE REGEX "${FDF_LIB_DIR}/test/*|${FDF_LIB_DIR}/mlx_lib_xpm.c")
+
+add_custom_target(${FDF_LIB_NAME}_target ALL
+        COMMAND make -C ${FDF_LIB_DIR}
+        BYPRODUCTS "${FDF_LIB_DIR}/${FDF_LIB_FILENAME}"
+        SOURCES "${FDF_LIB_HEADERS};${FDF_LIB_SOURCES}"
+        COMMENT "Building FDF_LIB")
+
+add_library(${FDF_LIB_NAME} STATIC IMPORTED)
+add_dependencies(${FDF_LIB_NAME} "${FDF_LIB_NAME}_target")
+set_target_properties(${FDF_LIB_NAME} PROPERTIES
+        IMPORTED_LOCATION "${FDF_LIB_DIR}/${FDF_LIB_FILENAME}" # Make sure to use absolute path here
+        INTERFACE_COMPILE_DEFINITIONS ""
+        INTERFACE_SOURCES  "${FDF_LIB_HEADERS};${FDF_LIB_SOURCES}"
+        INTERFACE_INCLUDE_DIRECTORIES "${FDF_LIB_DIR};${PROJECT_SOURCE_DIR}/include")
+
 add_custom_target(fclean ALL)
 add_custom_command(TARGET fclean POST_BUILD
         COMMAND make -C ${FT_LIB_DIR} fclean
-        COMMAND make -C ${MLX_LIB_DIR} clean)
+        COMMAND make -C ${FDF_LIB_DIR} clean)
 
 find_package(Threads REQUIRED)
 find_package(PkgConfig REQUIRED)
@@ -66,7 +90,7 @@ pkg_check_modules(Xext REQUIRED IMPORTED_TARGET xext)
 
 set(TARGET_NAME "${PROJECT_NAME}_exe")
 set(TARGET_LIBRARIES
-        ${FT_LIB_NAME} ${MLX_LIB_NAME}
+        ${FT_LIB_NAME} ${FDF_LIB_NAME} ${MLX_LIB_NAME}
         ${MATH_LIB}
         Threads::Threads)
 
@@ -77,5 +101,8 @@ add_executable(${TARGET_NAME} ${FDF_HEADERS} ${FDF_SOURCES})
 set_target_properties(${TARGET_NAME} PROPERTIES
         RUNTIME_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}"
         OUTPUT_NAME "FdF")
+target_compile_options(${TARGET_NAME} PRIVATE -Wno-error=parentheses)
 target_include_directories(${TARGET_NAME} PRIVATE "${PROJECT_SOURCE_DIR}/include")
-target_link_libraries(${TARGET_NAME} "${TARGET_LIBRARIES}" -lbsd -lX11 -lXext -lXrandr -lXpm -lm)
+target_link_libraries(${TARGET_NAME}
+        "${TARGET_LIBRARIES}"
+        -lbsd -lX11 -lXext -lXrandr -lXpm -lm)

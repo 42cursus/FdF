@@ -15,37 +15,40 @@
 # include <stdlib.h>
 # include <stdbool.h>
 # include <stdio.h>
-# include "ft/get_next_line.h"
+# include "ft/gnl.h"
 # include "ft/libft.h"
 # include "mlx.h"
 # include "fdf/util.h"
 
 typedef struct s_map_row t_map_row;
 struct s_map_row {
-	char	*line;
-	char	**word_tab;
-	long	*heights;
-	int		*colours;
-	t_map_row * next;
+	char		*line;
+	char		**word_tab;
+	long		*heights;
+	int			*colours;
+	t_map_row 	*next;
 };
 
 typedef struct s_fdf_struct {
-	int w_width;
-	int w_height;
-	t_xvar *mlx_app;
-	t_win_list *main_win;
-	t_map_row *map;
-	int cols;
-	int rows;
-	int case_zoom;
-	int z_size;
-	int max_height;
-	char *filename;
-	int custom_colour_flag;
-} t_fdf_struct;
+	struct s_fdf_win {
+		int width;
+		int height;
+	}			win;
+	t_xvar		*mlx;
+	t_win_list	*main_win;
+	t_map_row	*map;
+	int			cols;
+	int			rows;
+	int			b_scale;
+	int			z_scale;
+	int			max_height;
+	char		*filename;
+	int			custom_colour_flag;
+	int			endianness;
+} t_fdf;
 
-
-void load_data(t_fdf_struct *fdf);
-void data_convert(t_fdf_struct *fdf, t_map_row *node);
+void load_data(t_fdf *fdf);
+void data_convert(t_fdf *fdf, t_map_row *row);
+void on_expose(t_fdf *fdf);
 
 #endif //FT_FDF_H

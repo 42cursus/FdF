@@ -11,17 +11,21 @@
 # **************************************************************************** #
 
 NAME			:= libfdf.a
+TOPDIR			= $(PWD)
 CC				:= cc
-CFLAGS			:= -Wall -Wextra -Werror -Wimplicit
-INCLUDE_FLAGS	:= -I. -I./include -I/usr/include
-DEBUG_FLAGS		:= -g3 -gdwarf-3
+CFLAGS			:= -Wall -Wextra -Werror -Wimplicit -Wno-error=parentheses
+INCLUDE_FLAGS	:= -I.  -I../ft/include -I../../include -I./include -I/usr/include
+# GCC 8 implements -fmacro-prefix-map.
+#	Like -fdebug-prefix-map, it replaces a string prefix for the FILE macro.
+#	-ffile-prefix-map is the union of -fdebug-prefix-map and -fmacro-prefix-map
+DEBUG_FLAGS		:= -g3 -gdwarf-3 -ffile-prefix-map=$(TOPDIR)=./staging/
 
 CTAGS			:= ctags
 LIB_COMMAND		:= ar rcs
 RM				:= /bin/rm
 
 SRCS	 		:=
-DIRS			:= utils
+DIRS			:= utils draw
 
 include $(addsuffix /Makefile.mk,$(DIRS))
 
@@ -31,7 +35,7 @@ BUILD_OBJS		= $(SRCS:%.c=$(BUILD_DIR)/%.o)
 ASM_FILES		= $(SRCS:.c=.s)
 
 all: $(NAME)
-	nm -fsA $(NAME)
+	nm --defined-only -f sysv $(NAME) | grep -v 'wm.'
 
 # We need this for the output to go in the right place.  It will default to
 # empty if make was configured to work with a cc that can't grok -c and -o
