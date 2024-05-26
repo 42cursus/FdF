@@ -38,8 +38,8 @@ LIBFT			=  $(LIBFT_PATH)/libft.a
 LIBX_PATH		=  ./lib/mlx
 LIBX			=  $(LIBX_PATH)/libmlx.a
 LIBFDF_PATH		=  ./lib/fdf
-LIBFDF			=  $(LIBX_PATH)/libfdf.a
-
+LIBFDF			=  $(LIBFDF_PATH)/libfdf.a
+LIBS			:= $(LIBX) $(LIBFT) $(LIBFDF)
 
 LINK_FLAGS		:= -L $(LIBFT_PATH) -L $(LIBX_PATH)  -L $(LIBFDF_PATH) \
 					-lfdf -lmlx -lft -lX11 -lXext -lm
@@ -53,26 +53,29 @@ OBJ_DIR			= $(BUILD_DIR)/obj
 
 SRC_FS	 		:= main.c \
 					load_data.c \
-					data_convert.c
+					data_convert.c \
+					on_expose.c
 SRCS	 		:= $(SRC_FS:%.c=$(SRC_DIR)/%.c)
 OBJS			= $(SRCS:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
 
-all: clean $(NAME) test
+.PHONY: all clean test re
+
+all: $(NAME) test
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 		@mkdir -p $(@D)
 		$(CC) $(CFLAGS) $(INCLUDE_FLAGS) -o $@ -c $<
 
 $(LIBFT):
-		@make -C $(LIBFT_PATH) -j8
+		@$(MAKE) -C $(LIBFT_PATH) -j8
 
 $(LIBX):
-		@make -C $(LIBX_PATH) -j8
+		@$(MAKE) -C $(LIBX_PATH)
 
 $(LIBFDF):
-		@make -C $(LIBFDF_PATH) -j8
+		@$(MAKE) -C $(LIBFDF_PATH) -j8
 
-$(NAME): $(OBJS) $(LIBFT) $(LIBX)
+$(NAME): $(LIBS) $(OBJS)
 		$(CC) $(CFLAGS) $(INCLUDE_FLAGS) -o $@ $^  $(LINK_FLAGS)
 
 test: $(NAME)
@@ -87,23 +90,18 @@ test: $(NAME)
 
 clean:
 		@$(RM) -fr $(OBJ_DIR)
-		@make -C $(LIBFT_PATH) clean
-		@make -C $(LIBX_PATH) clean
-		@make -C $(LIBX_PATH) clean
+		@$(MAKE) -C $(LIBFT_PATH) clean
+		@$(MAKE) -C $(LIBX_PATH) clean
+		@$(MAKE) -C $(LIBX_PATH) clean
 
 fclean: clean
 		@$(RM) -fr $(NAME) $(BUILD_DIR) a.out
-		@make -C $(LIBFT_PATH) fclean
-		@make -C $(LIBX_PATH) clean
-		@make -C $(LIBFDF_PATH) clean
 
 re: fclean all
 
 norm:
 		@norminette $(SRCS)
-		@make -C $(LIBFT_PATH) norm
-		@make -C $(LIBX_PATH) norm
-		@make -C $(LIBFDF_PATH) norm
+		@$(MAKE) -C $(LIBFT_PATH) norm
+		@$(MAKE) -C $(LIBFDF_PATH) norm
 
-.PHONY: all clean test re
 
