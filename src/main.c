@@ -11,9 +11,11 @@
 /* ************************************************************************** */
 
 #include <sysexits.h>
+#include <X11/XF86keysym.h>
 #include "ft_fdf.h"
 
-# define EXIT_KEY 0x35 /* (53) Number 5 on the main keyboard */
+# define NUM_5	 0x35 /* (53) Number 5 on the main keyboard */
+# define EXIT_KEY NUM_5
 
 int out(int key)
 {
