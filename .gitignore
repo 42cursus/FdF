@@ -15,6 +15,7 @@ resources/
 !/resources/maps.zip
 !/resources/program_screenshot.png
 gdb.txt
+scratch/
 
 # From https://stackoverflow.com/questions/15606955/:
 # If you want to list all the files currently being tracked:

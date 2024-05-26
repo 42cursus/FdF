@@ -21,6 +21,9 @@ void on_expose(t_fdf *fdf)
 	int cr;
 	int cc;
 	struct s_fdf_win win;
+
+	int z_scale = fdf->z_scale;
+	int b_scale = fdf->b_scale;
 	
 	win = fdf->win;
 	row = fdf->map;
@@ -30,15 +33,16 @@ void on_expose(t_fdf *fdf)
 		cc = fdf->cols;
 		while (--cc > 0)
 		{
-			int ch_cc = (int) row->heights[cc] * fdf->z_scale;
-			int ch_nc = (int) row->heights[(cc - 1)] * fdf->z_scale;
-			int nh_cc = (int) row->next->heights[cc] * fdf->z_scale;
-			int nh_nc = (int) row->next->heights[(cc - 1)] * fdf->z_scale;
 
-			int cc7 = cc * fdf->b_scale * 7;
-			int cr7 = cr * fdf->b_scale * 7;
-			int pc7 = (cc - 1) * fdf->b_scale * 7;
-			int pr7 = (cr - 1) * fdf->b_scale * 7;
+			int ch_cc = (int) row->heights[cc] * z_scale;
+			int ch_nc = (int) row->heights[(cc - 1)] * z_scale;
+			int nh_cc = (int) row->next->heights[cc] * z_scale;
+			int nh_nc = (int) row->next->heights[(cc - 1)] * z_scale;
+
+			int cc7 = cc * b_scale * 7;
+			int cr7 = cr * b_scale * 7;
+			int pc7 = (cc - 1) * b_scale * 7;
+			int pr7 = (cr - 1) * b_scale * 7;
 
 			*t1 = (t_point){
 				.x = (cc7 / 10 - cr7 / 10) + win.width / 2,
