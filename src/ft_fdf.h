@@ -29,6 +29,7 @@ struct s_map_row {
 	t_map_row 	*next;
 };
 
+
 typedef struct s_fdf_struct {
 	struct s_fdf_win {
 		int width;

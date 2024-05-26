@@ -15,7 +15,23 @@
 
 # include "util.h"
 
+typedef struct s_fdf_colour
+{
+	int r;
+	int g;
+	int b;
+}	t_rgb;
+
+typedef struct s_fdf_point
+{
+	int x;
+	int y;
+	int col;
+}	t_point;
+
 typedef struct s_fdf_struct	t_fdf;
-void draw_line_d(t_fdf *fdf, int x1, int y1, int x2, int y2, int color1, int color2);
+void draw_line_d(t_fdf *fdf, t_point p1, t_point p2);
+t_rgb ft_fdf_get_colour(int x1, int color1, int color2, int curr_pos, int delta);
+t_rgb ft_fdf_int_to_color(int color);
 
 #endif //FDF_LIB_H
