@@ -41,6 +41,7 @@ void	expose_widget(Widget w)
 	if (ww <= 0 || hh <= 0) return;
 	xexpose.width = ww;
 	xexpose.height = hh;
-	XSendEvent(XtDisplay (w), XtWindow (w), True, ExposureMask, &xexpose);
+	XSendEvent(XtDisplay (w), XtWindow (w), True, ExposureMask,
+			   (XEvent *) &xexpose);
 	XFlush(XtDisplay(w));
 }

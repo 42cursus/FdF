@@ -119,7 +119,7 @@ int	main(int argc, char **argv)
 
 	iiiii = fdf->b_scale * (fdf->cols + fdf->rows) * 7;
 
-	fdf->win.height = fdf->max_height * fdf->b_scale + iiiii / 20;
+	fdf->win.height = fdf->b_scale / 20 *  (20 * fdf->max_height + ((fdf->cols + fdf->rows) * 7));
 
 	if (800 < fdf->win.height) {
 		fdf->win.height = 800;

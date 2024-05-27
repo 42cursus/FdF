@@ -48,7 +48,7 @@ void ft_draw_pix(t_fdf *fdf, t_cont *ptr, t_img *img)
 		p = pts[i];
 		int offset;
 		offset = (img->size_line * p.y) + (p.x * (img->bpp / 8));
-		*((unsigned int *)(offset + img->data)) = mlx_get_color_value(fdf->mlx,  p.col);
+		*((unsigned int *)(offset + img->data)) = p.col;
 	}
 }
 
@@ -148,7 +148,6 @@ void on_expose(t_fdf *fdf)
 			t2->col = row->next->colours[cc];
 
 			ft_list_push_front(&point_list, draw_line_d(fdf,  *t1, *t2));
-
 
 			if (fdf->custom_colour_flag != 0)
 			{
