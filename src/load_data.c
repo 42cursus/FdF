@@ -16,35 +16,27 @@ void read_lines_from_file(t_fdf *fdf);
 
 void load_data(t_fdf *fdf)
 {
-	t_map_row *current_node;
+	t_map_row *next;
 	bool has_next;
 	t_map_row *row;
 
 	read_lines_from_file(fdf);
 	row = NULL;
 	while (fdf->map != NULL) {
-		current_node = fdf->map->next;
+		next = fdf->map->next;
 		fdf->map->next = row;
 		row = fdf->map;
-		fdf->map = current_node;
+		fdf->map = next;
 	}
 	fdf->map = row;
-	fdf->cols = 0;
-	while (true)
-	{
-		has_next = false;
-		if (fdf->map != NULL)
-			has_next = fdf->map->word_tab[fdf->cols] != NULL;
-		if (has_next)
-			fdf->cols = fdf->cols + 1;
-		else break ;
-	}
+	fdf->cols = (int)ft_get_tab_size((void **) fdf->map->word_tab);
 	fdf->rows = 0;
 	fdf->max_height = 0;
 	row = fdf->map;
-	while (row != NULL) {
+	while (row != NULL)
+	{
 		data_convert(fdf, row);
-		fdf->rows = fdf->rows + 1;
+		(fdf->rows)++;
 		row = row->next;
 	}
 }
@@ -64,6 +56,8 @@ void read_lines_from_file(t_fdf *fdf)
 	}
 	while (line = get_next_line(fd), line != NULL)
 	{
+
+
 		row = (t_map_row *) malloc(sizeof(t_map_row));
 		row->line = line;
 		w_tab = ft_split(row->line, ' ');

@@ -12,14 +12,12 @@
 
 #include "ft_fdf.h"
 #include <string.h>
-#include <assert.h>
 
 void data_convert(t_fdf *fdf, t_map_row *row)
 {
 	long			*long_array;
 	int				*int_array;
 	long			height;
-	unsigned long	colour;
 	char			*endptr;
 	int				curr_col;
 
@@ -38,8 +36,8 @@ void data_convert(t_fdf *fdf, t_map_row *row)
 			fdf->max_height = (int) row->heights[curr_col];
 		if (*endptr == ',')
 		{
-			colour = ft_strtoul(endptr + 1, NULL, 0);
-			row->colours[curr_col] = (int)colour;
+			row->colours[curr_col] = (int)ft_strtoul(endptr + 1,
+													 NULL, 0);
 			fdf->custom_colour_flag = 1;
 		}
 	}

@@ -20,7 +20,7 @@
 # include "mlx.h"
 # include "fdf/util.h"
 
-#define FT_OFF 80
+#define FT_OFF 60
 #define FT_SPARE FT_OFF + FT_OFF
 
 /**
