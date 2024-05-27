@@ -13,6 +13,7 @@
 #ifndef FDF_LIB_H
 #define FDF_LIB_H
 
+#include <ft/ft_list.h>
 # include "util.h"
 
 typedef struct s_fdf_colour
@@ -29,9 +30,15 @@ typedef struct s_fdf_point
 	int col;
 }	t_point;
 
+typedef struct s_fdf_points
+{
+	t_point	*tab;
+	int 	size;
+}	t_points;
+
 typedef struct s_fdf_struct	t_fdf;
-int		draw_line_d(t_fdf *fdf, t_point p1, t_point p2);
-int		ft_fdf_get_color(t_point p1, t_point p2, int curr_pos);
-t_rgb	ft_fdf_int_to_color(int color);
+t_list *	draw_line_d(t_fdf *fdf, t_point p1, t_point p2);
+int			ft_fdf_get_color(t_point p1, t_point p2, int curr_pos);
+t_rgb		ft_fdf_int_to_color(int color);
 
 #endif //FDF_LIB_H
