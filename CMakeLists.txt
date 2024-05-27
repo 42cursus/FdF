@@ -105,8 +105,14 @@ add_executable(${TARGET_NAME} ${FDF_HEADERS} ${FDF_SOURCES})
 set_target_properties(${TARGET_NAME} PROPERTIES
         RUNTIME_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}"
         OUTPUT_NAME "FdF")
-target_compile_options(${TARGET_NAME} PRIVATE -Wno-error=parentheses)
+target_compile_options(${TARGET_NAME} PRIVATE
+        -Wno-error=parentheses
+        -fno-omit-frame-pointer
+        -fsanitize=address
+        -fsanitize=leak
+)
 target_include_directories(${TARGET_NAME} PRIVATE "${PROJECT_SOURCE_DIR}/include")
 target_link_libraries(${TARGET_NAME}
+        asan lsan
         "${TARGET_LIBRARIES}"
-        -lbsd -lX11 -lXext -lXrandr -lXpm -lm)
+        bsd Xt Xm Mrm X11 Xext Xrandr Xpm)
