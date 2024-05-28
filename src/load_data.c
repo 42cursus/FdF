@@ -17,12 +17,12 @@ void read_lines_from_file(t_fdf *fdf);
 void load_data(t_fdf *fdf)
 {
 	t_map_row *next;
-	bool has_next;
 	t_map_row *row;
 
 	read_lines_from_file(fdf);
 	row = NULL;
-	while (fdf->map != NULL) {
+	while (fdf->map != NULL)
+	{
 		next = fdf->map->next;
 		fdf->map->next = row;
 		row = fdf->map;
@@ -56,8 +56,6 @@ void read_lines_from_file(t_fdf *fdf)
 	}
 	while (line = get_next_line(fd), line != NULL)
 	{
-
-
 		row = (t_map_row *) malloc(sizeof(t_map_row));
 		row->line = line;
 		w_tab = ft_split(row->line, ' ');
