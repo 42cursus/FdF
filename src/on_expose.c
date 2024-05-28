@@ -30,8 +30,9 @@
  *	See:
  *		https://www.x.org/releases/X11R7.7/doc/xproto/x11protocol.html
  */
-void ft_draw_pix(t_fdf *fdf, t_cont *ptr, t_img *img)
+void ft_draw_pix(t_fdf *fdf, t_cont *ptr)
 {
+	t_img *img = fdf->canvas;
 	int size;
 	char *offset;
 
@@ -79,7 +80,6 @@ void on_expose(t_fdf *fdf)
 
 {
 	t_list *point_list = NULL;
-	t_list *point_list2 = NULL;
 	t_map_row *row;
 	t_point *const t1 = &(t_point){};
 	t_point *const t2 = &(t_point){};
@@ -89,8 +89,8 @@ void on_expose(t_fdf *fdf)
 
 	row = fdf->map;
 
-	long height = fdf->win.height;
-	int width = fdf->win.width;
+	long height = fdf->draw_offset_y;
+	int width = fdf->draw_offset_x;
 
 	cr = fdf->rows;
 	while (--cr)
@@ -141,8 +141,7 @@ void on_expose(t_fdf *fdf)
 	}
 	ft_list_foreach(point_list, (void (*)(void *))({
 		void lambda_fun(void *data){
-			t_list2 *lst =  (t_list2 *)data;
-			ft_draw_pix(fdf,(t_cont *)lst->data, fdf->canvas);
+			ft_draw_pix(fdf,(t_cont *)data);
 		}
 		lambda_fun;
 	}));

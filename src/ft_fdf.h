@@ -31,25 +31,6 @@
 #define RIGHT 65363
 #define LEFT 65361
 
-/**
- * What is the strict aliasing rule?
- * 	https://stackoverflow.com/questions/98650/
- *
- * How to use a union along with two structs + more:
- * 	https://stackoverflow.com/questions/28596446/
- *
- * See also:
- * 	Embedded C. Struct and Union, Bit Fields in A Nutshell
- * 		https://atadiat.com/en/e-embedded-c-struct-union-part-2/
- */
-typedef struct s_content
-{
-	void	*data;
-	int		size;
-}		t_cont;
-
-
-
 typedef struct s_map_row t_map_row;
 struct s_map_row {
 	char		*line;
@@ -76,6 +57,8 @@ typedef struct s_fdf_struct {
 	char		*filename;
 	int			custom_colour_flag;
 	int			endianness;
+	long		draw_offset_y;
+	int			draw_offset_x;
 	t_img		*canvas;
 } t_fdf;
 
