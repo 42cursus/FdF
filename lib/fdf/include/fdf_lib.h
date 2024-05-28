@@ -27,7 +27,8 @@ typedef struct s_fdf_point
 {
 	int x;
 	int y;
-	int col;
+	int z;
+	unsigned int col;
 }	t_point;
 
 typedef struct s_fdf_points

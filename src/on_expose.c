@@ -15,10 +15,6 @@
 #include "ft_fdf.h"
 #include <math.h>
 
-int draw_circle(t_fdf *fdf, unsigned char *data, int bpp, int sl, int w, int h);
-int calc_radius(int x, int y, int w_shift, int h_shift, int raduis);
-
-t_img *im;
 /**
  * From the X11 protocol specification
  * (XYFormat):
@@ -37,6 +33,7 @@ t_img *im;
 void ft_draw_pix(t_fdf *fdf, t_cont *ptr, t_img *img)
 {
 	int size;
+	char *offset;
 
 	size = ptr->size;
 	t_point p;
@@ -46,9 +43,12 @@ void ft_draw_pix(t_fdf *fdf, t_cont *ptr, t_img *img)
 	while(++i < size)
 	{
 		p = pts[i];
-		int offset;
-		offset = (img->size_line * p.y) + (p.x * (img->bpp / 8));
-		*((unsigned int *)(offset + img->data)) = p.col;
+		if ((p.x < 0 ) || (p.y < 0 ))
+			continue ;
+//		mlx_pixel_put(fdf->mlx, fdf->root, p.x, p.y, p.col);
+		offset = img->data + (img->size_line * p.y) + (p.x * (img->bpp / 8));
+		*((unsigned int *)(offset)) = p.col;
+//		(unsigned int *)(img->data)[offset] = p.col;
 	}
 }
 
@@ -85,74 +85,53 @@ void on_expose(t_fdf *fdf)
 	t_point *const t2 = &(t_point){};
 	int cr;
 	int cc;
-	struct s_fdf_win win;
 	void	(*f)(void *);
-	int z_scale = fdf->z_scale;
-	int b_scale = fdf->b_scale;
 
-	int cnt = 0;
-
-	int xpm1_x;
-	int xpm1_y;
-
-	t_img *im3 = mlx_new_image(fdf->mlx, fdf->win.width + FT_OFF * 2, fdf->win.height);
-
-	if (!im3) {
-		ft_printf(" !! KO !!\n");
-		exit(1);
-	}
-	ft_printf("OK (bpp3 %d, sizeline3 %d endianness3 %d type %d)\n",
-			  im3->bpp, im3->size_line, im3->image->byte_order, im3->type);
-
-
-
-
-//	color_screen(im3, 0x0);
-//	draw_circle(fdf, im3->data, im3->bpp, im3->size_line, 100, 100);
-	t_img *im2 = mlx_xpm_file_to_image(fdf->mlx, "open24.xpm", &xpm1_x, &xpm1_y);
-	fdf->canvas = im3;
-
-	win = fdf->win;
 	row = fdf->map;
+
+	long height = fdf->win.height;
+	int width = fdf->win.width;
+
 	cr = fdf->rows;
 	while (--cr)
 	{
 		cc = fdf->cols;
 		while (--cc)
 		{
-			cnt++;
-			int ch_cc = (int) row->heights[cc] * z_scale;
-			int ch_nc = (int) row->heights[(cc - 1)] * z_scale;
-			int nh_cc = (int) row->next->heights[cc] * z_scale;
-			int nh_nc = (int) row->next->heights[(cc - 1)] * z_scale;
+			long h1 = row->heights[cc] * fdf->z_scale;
+			long h2 = row->heights[(cc - 1)] * fdf->z_scale;
 
-			int cc7 = cc * b_scale * 7;
-			int cr7 = cr * b_scale * 7;
-			int pc7 = (cc - 1) * b_scale * 7;
-			int pr7 = (cr - 1) * b_scale * 7;
+			long h3 = row->next->heights[cc] * fdf->z_scale;
 
-			int width = win.width + FT_OFF * 2;
+			long h4 = row->next->heights[(cc - 1)] * fdf->z_scale;
+
+			int x1 = cc * fdf->xy_scale * 7;
+			int y1 = cr * fdf->xy_scale * 7;
+
+			int x2 = (cc - 1) * fdf->xy_scale * 7;
+			int y2 = (cr - 1) * fdf->xy_scale * 7;
+
 			*t1 = (t_point){
-				.x = (cc7 / 10 - cr7 / 10) + width / 2,
-				.y = win.height - (ch_cc + cc7 / 20 + cr7 / 20),
+				.x = (x1 / 10 - y1 / 10) + width,
+				.y = height - (h1 + x1 / 20 + y1 / 20),
 				.col = row->colours[cc]};
 
-			t2->x = (pc7 / 10 - cr7 / 10) + width / 2;
-			t2->y = win.height - (ch_nc + pc7 / 20 + cr7 / 20);
+			t2->x = (x2 / 10 - y1 / 10) + width;
+			t2->y = height - (h2 + x2 / 20 + y1 / 20);
 			t2->col = row->colours[(cc - 1)];
 
 			ft_list_push_front(&point_list, draw_line_d(fdf, *t1, *t2));
 
-			t2->x = (cc7 / 10 - pr7 / 10) + width / 2;
-			t2->y = win.height - (nh_cc + cc7 / 20 + pr7 / 20);
+			t2->x = (x1 / 10 - y2 / 10) + width;
+			t2->y = height - (h3 + x1 / 20 + y2 / 20);
 			t2->col = row->next->colours[cc];
 
 			ft_list_push_front(&point_list, draw_line_d(fdf,  *t1, *t2));
 
-			if (fdf->custom_colour_flag != 0)
+			if (fdf->custom_colour_flag)
 			{
-				t2->x = (pc7 / 10 - pr7 / 10) + width / 2;
-				t2->y = win.height - (nh_nc + pc7 / 20 + pr7 / 20);
+				t2->x = (x2 / 10 - y2 / 10) + width;
+				t2->y = height - (h4 + x2 / 20 + y2 / 20);
 				t2->col = row->next->colours[(cc - 1)];
 				ft_list_push_front(&point_list, draw_line_d(fdf, *t1,*t2));
 			}
@@ -163,14 +142,13 @@ void on_expose(t_fdf *fdf)
 	ft_list_foreach(point_list, (void (*)(void *))({
 		void lambda_fun(void *data){
 			t_list2 *lst =  (t_list2 *)data;
-			ft_draw_pix(fdf,(t_cont *)lst->data, im3);
+			ft_draw_pix(fdf,(t_cont *)lst->data, fdf->canvas);
 		}
 		lambda_fun;
 	}));
 	ft_list_clear(point_list, (void (*)(void *)) del_fun);
 	point_list = NULL;
 
-	mlx_put_image_to_window(fdf->mlx,  fdf->main_win, im3, -FT_OFF, 0);
-	mlx_put_image_to_window(fdf->mlx,  fdf->main_win, im2, 0, 0);
+	mlx_put_image_to_window(fdf->mlx, fdf->root, fdf->canvas, fdf->offset.x, fdf->offset.y);
 }
 

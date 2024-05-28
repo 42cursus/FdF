@@ -15,8 +15,7 @@
 #include <fdf/fdf_lib.h>
 #include "ft_fdf.h"
 
-# define NUM_5	 0x35 /* (53) Number 5 on the main keyboard */
-# define EXIT_KEY NUM_5
+
 
 int out(int key)
 {
@@ -42,43 +41,7 @@ int expose_win(void *fdf) {
 	return (EX_OK);
 }
 
-#define UP 65362
-#define DOWN 65364
-#define RIGHT 65363
-#define LEFT 65361
 
-int key_win(int key, t_fdf *fdf)
-{
-
-	static t_point offset = {.x = -FT_OFF};
-	t_img *im = fdf->canvas;
-	int step = 10;
-
-	printf("Key in Win1 : %d\n", key);
-	if (key == EXIT_KEY)
-		exit(0);
-	if (key == RIGHT) {
-		offset.x += step;
-		mlx_clear_window(fdf->mlx, fdf->main_win);
-		mlx_put_image_to_window(fdf->mlx, fdf->main_win, im, offset.x, offset.y);
-	}
-	if (key == LEFT) {
-		offset.x -= step;
-		mlx_clear_window(fdf->mlx, fdf->main_win);
-		mlx_put_image_to_window(fdf->mlx, fdf->main_win, im, offset.x, offset.y);
-	}
-	if (key == UP) {
-		offset.y -= step;
-		mlx_clear_window(fdf->mlx, fdf->main_win);
-		mlx_put_image_to_window(fdf->mlx, fdf->main_win, im, offset.x, offset.y);
-	}
-	if (key == DOWN) {
-		offset.y += step;
-		mlx_clear_window(fdf->mlx, fdf->main_win);
-		mlx_put_image_to_window(fdf->mlx, fdf->main_win, im, offset.x, offset.y);
-	}
-	return (0);
-}
 
 
 int	main(int argc, char **argv)
@@ -86,7 +49,8 @@ int	main(int argc, char **argv)
 	int				iiiii;
 	int				shortest_side;
 	int				longest_side;
-	t_fdf *const	fdf = &(t_fdf){.map = NULL, .custom_colour_flag = 1};
+	t_fdf *const	fdf = &(t_fdf){.xy_scale = (MULT2 * 2),
+								   .map = NULL, .custom_colour_flag = 1};
 	int				ret_code;
 
 	ret_code = 0;
@@ -101,40 +65,68 @@ int	main(int argc, char **argv)
 		printf("No data found.\n");
 		exit(1);
 	}
-	fdf->b_scale = 20;
+
 	if (fdf->cols < fdf->rows)
 		longest_side = fdf->rows;
 	else
 		longest_side = fdf->cols;
-	fdf->win.width = (longest_side * 280) / 10;
-	if (1000 < fdf->win.width) {
+	fdf->win.width = (longest_side * 280) / MULT2;
+	if (fdf->win.width > 1000)
+	{
 		fdf->win.width = 1000;
 		if (fdf->cols < fdf->rows)
 			shortest_side = fdf->rows;
 		else
 			shortest_side = fdf->cols;
-		fdf->b_scale = (int) (10000 / (long) (shortest_side * 14)) + 1;
+		fdf->xy_scale = (int) (1000 * MULT2 / (long) (shortest_side * (MULT1 * 2))) + 1;
 	}
-	fdf->z_scale = fdf->b_scale;
 
-	iiiii = fdf->b_scale * (fdf->cols + fdf->rows) * 7;
+	int colls_rows = fdf->cols + fdf->rows;
 
-	fdf->win.height = fdf->b_scale / 20 *  (20 * fdf->max_height + ((fdf->cols + fdf->rows) * 7));
+	fdf->win.height = fdf->xy_scale / (10 * 2) *  ((MULT2 * 2) * fdf->max_height + ((fdf->cols + fdf->rows) * MULT1));
 
-	if (800 < fdf->win.height) {
+	int delta = colls_rows * fdf->xy_scale / (MULT2 * 2);
+
+	fdf->win.height = fdf->max_height * fdf->xy_scale + delta;
+	if (fdf->win.height > 800)
+	{
 		fdf->win.height = 800;
-		fdf->z_scale = (800 - iiiii / 20) / fdf->max_height + 1;
+		fdf->z_scale = ((800 - delta) / fdf->max_height) + 1;
 	}
+
+	fdf->xy_scale *= 1;
+	fdf->z_scale /= 2;
+
 	fdf->mlx = mlx_init();
 	if (fdf->mlx == NULL)
 		exit(1);
-	fdf->main_win = mlx_new_window(fdf->mlx, fdf->win.width,
-								   fdf->win.height, "fdf");
+	fdf->root = mlx_new_window(fdf->mlx, fdf->win.width,
+							   fdf->win.height, "fdf");
 
-	mlx_expose_hook( fdf->main_win, expose_win, fdf);
-	mlx_hook(fdf->main_win, DestroyNotify, 0,
-			 exit_win, fdf->mlx);
-	mlx_key_hook( fdf->main_win, key_win, fdf);
+	t_img *im3 = mlx_new_image(fdf->mlx, fdf->win.width * 2, fdf->win.height * 2);
+	if (!im3)
+	{
+		ft_printf(" !! KO !!\n");
+		exit(1);
+	}
+	ft_printf("OK (bpp3 %d, sizeline3 %d endianness3 %d type %d)\n",
+			  im3->bpp, im3->size_line, im3->image->byte_order, im3->type);
+	fdf->canvas = im3;
+
+	fdf->offset.x = -(fdf->win.width/2);
+	fdf->offset.y = 0;
+
+	mlx_expose_hook(fdf->root, expose_win, fdf);
+	t_img *im2 = mlx_xpm_file_to_image(fdf->mlx, "open24.xpm", (int [1]){}, (int[1]){});
+	mlx_put_image_to_window(fdf->mlx, fdf->root, im2,  0, 0);
+
+	mlx_hook(fdf->root, DestroyNotify, 0, exit_win,
+			 fdf->mlx);
+	fdf->root->hooks[KeyRelease].hook = key_win;
+	fdf->root->hooks[KeyRelease].param = fdf;
+	fdf->root->hooks[KeyRelease].mask = KeyReleaseMask | KeyPressMask;
+
 	mlx_loop(fdf->mlx);
+
 	return (ret_code);
 }
