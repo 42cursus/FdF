@@ -46,11 +46,10 @@ int expose_win(void *fdf) {
 
 int	main(int argc, char **argv)
 {
-	int				iiiii;
 	int				shortest_side;
 	int				longest_side;
-	t_fdf *const	fdf = &(t_fdf){.xy_scale = (MULT2 * 2),
-								   .map = NULL, .custom_colour_flag = 1};
+	t_fdf *const	fdf = &(t_fdf){.xy_scale = 20, .z_scale = 20,
+								   .map = NULL, .custom_colour_flag = 0};
 	int				ret_code;
 
 	ret_code = 0;
@@ -65,7 +64,6 @@ int	main(int argc, char **argv)
 		printf("No data found.\n");
 		exit(1);
 	}
-
 	if (fdf->cols < fdf->rows)
 		longest_side = fdf->rows;
 	else
@@ -78,24 +76,26 @@ int	main(int argc, char **argv)
 			shortest_side = fdf->rows;
 		else
 			shortest_side = fdf->cols;
-		fdf->xy_scale = (int) (1000 * MULT2 / (long) (shortest_side * (MULT1 * 2))) + 1;
+		fdf->xy_scale = (int) (10000 / (long) (shortest_side * (MULT1 * 2))) + 1;
 	}
+	fdf->z_scale = fdf->xy_scale;
 
 	int colls_rows = fdf->cols + fdf->rows;
 
-	fdf->win.height = fdf->xy_scale / (10 * 2) *  ((MULT2 * 2) * fdf->max_height + ((fdf->cols + fdf->rows) * MULT1));
+//	fdf->win.height = fdf->xy_scale / (MULT2 * 2) *  ((MULT2 * 2) * fdf->max_height + ((fdf->cols + fdf->rows) * MULT1));
+	fdf->win.height = fdf->max_height * fdf->xy_scale + (fdf->xy_scale * (fdf->cols + fdf->rows) * MULT1) / (MULT2 * 2);
 
 	int delta = colls_rows * fdf->xy_scale / (MULT2 * 2);
-
-	fdf->win.height = fdf->max_height * fdf->xy_scale + delta;
+//
+//	fdf->win.height = fdf->max_height * fdf->xy_scale + delta;
 	if (fdf->win.height > 800)
 	{
 		fdf->win.height = 800;
 		fdf->z_scale = ((800 - delta) / fdf->max_height) + 1;
 	}
 
-	fdf->xy_scale *= 1;
-	fdf->z_scale /= 2;
+//	fdf->xy_scale *= 2;
+//	fdf->z_scale *= 2;
 
 	fdf->mlx = mlx_init();
 	if (fdf->mlx == NULL)
@@ -103,7 +103,19 @@ int	main(int argc, char **argv)
 	fdf->root = mlx_new_window(fdf->mlx, fdf->win.width,
 							   fdf->win.height, "fdf");
 
-	t_img *im3 = mlx_new_image(fdf->mlx, fdf->win.width * 2, fdf->win.height * 2);
+	fdf->xy_scale *= 1;
+	fdf->z_scale *= 1;
+
+	int img_width = fdf->win.width * 2;
+	int img_height = fdf->win.height * 2;
+
+	fdf->offset.x = -(fdf->win.width / 2);
+	fdf->offset.y = -(fdf->win.height / 2);
+
+	fdf->draw_offset_x = fdf->win.width;
+	fdf->draw_offset_y = fdf->win.height - fdf->offset.y;
+
+	t_img *im3 = mlx_new_image(fdf->mlx, img_width, img_height);
 	if (!im3)
 	{
 		ft_printf(" !! KO !!\n");
@@ -112,9 +124,6 @@ int	main(int argc, char **argv)
 	ft_printf("OK (bpp3 %d, sizeline3 %d endianness3 %d type %d)\n",
 			  im3->bpp, im3->size_line, im3->image->byte_order, im3->type);
 	fdf->canvas = im3;
-
-	fdf->offset.x = -(fdf->win.width/2);
-	fdf->offset.y = 0;
 
 	mlx_expose_hook(fdf->root, expose_win, fdf);
 	t_img *im2 = mlx_xpm_file_to_image(fdf->mlx, "open24.xpm", (int [1]){}, (int[1]){});

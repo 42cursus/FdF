@@ -24,10 +24,9 @@ void ft_swap_xy(t_point *p) {
 	p->y = tmp;
 }
 
-t_list *ft_fdf_intep_d(t_fdf *fdf, t_point p1, t_point p2, int orientation)
+t_cont	*ft_fdf_intep_d(t_fdf *fdf, t_point p1, t_point p2, int orientation)
 {
-	t_list *res;
-	t_cont *content;
+	t_points *res;
 	t_point p3;
 	int curr;
 	int inc;
@@ -36,25 +35,24 @@ t_list *ft_fdf_intep_d(t_fdf *fdf, t_point p1, t_point p2, int orientation)
 	inc = 1;
 	if (p2.x < p1.x)
 		inc = -1;
-	content = ft_init_tab((p2.x - p1.x) * inc);
+	res = (t_points *) ft_init_tab(((p2.x - p1.x) * inc));
 	p3 = (t_point) {.x = p1.x, .y = p2.y, .col = p2.col};
 	curr = p1.x;
-	i = content->size;
-	while (i--) //	while (curr * inc <= p2.x * inc)
+	i = -1;
+	while (++i < res->size) //	while (curr * inc <= p2.x * inc)
 	{
 		p3.y = curr;
 		p3.x = p1.y + ((p2.y - p1.y) * (curr - p1.x)) / (p2.x - p1.x);
 		p3.col = ft_fdf_get_color(p1, p2, curr);
 		if (orientation == 0)
 			ft_swap_xy(&p3);
-		((t_point *) (content->data))[i] = p3;
+		res->data[i] = p3; //		((t_point *) (res->data))[i] = p3;
 		curr += inc;
 	}
-	res = ft_list_create_elem(content);
-	return (res);
+	return (t_cont *) (res);
 }
 
-t_cont *ft_init_tab(int tab_size) {
+t_cont	*ft_init_tab(int tab_size) {
 	t_point *tab;
 	t_cont *cont;
 
@@ -78,20 +76,18 @@ t_cont *ft_init_tab(int tab_size) {
  * How detect malloc failure?
  * 	https://stackoverflow.com/questions/6325940/
  */
-t_list *draw_line_d(t_fdf *fdf, t_point p1, t_point p2) {
-	t_list *res;
-	t_cont *content;
+t_cont *draw_line_d(t_fdf *fdf, t_point p1, t_point p2) {
+	t_cont *res;
 	int orientation;
 
 	orientation = (abs(p2.x - p1.x) < abs(p2.y - p1.y));
 	if (orientation)
 		(ft_swap_xy(&p1), ft_swap_xy(&p2));
-	if (p2.x == p1.x && p2.y == p1.y)
+	if ((p2.x == p1.x) && (p2.y == p1.y))
 	{
-		content = ft_init_tab(1);
-		*(t_point *) (content->data) = (t_point) {.x = p1.x, .y = p2.y,
+		res = ft_init_tab(1);
+		*(t_point *) (res->data) = (t_point) {.x = p1.x, .y = p2.y,
 												  .col = p2.col};
-		res = ft_list_create_elem(content);
 	}
 	else
 		res = ft_fdf_intep_d(fdf, p1, p2, orientation);
