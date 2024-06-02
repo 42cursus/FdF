@@ -20,6 +20,8 @@
 #define RIGHT 65363
 #define LEFT 65361
 
+int	cleanup(const t_fdf *fdf);
+
 int	mouse_win(int button, int x, int y, void *p)
 {
 	t_img	*im3;
@@ -54,7 +56,7 @@ int	key_win(int key, t_fdf *fdf)
 
 	step = 25;
 	if (key == NUM_5 || key == ESC)
-		exit(0);
+		exit_win(fdf);
 	if (key == RIGHT)
 		fdf->draw_offset_x += step;
 	if (key == LEFT)
@@ -84,8 +86,9 @@ void	replace_image(t_fdf *fdf)
 		fdf->canvas, fdf->offset.x, fdf->offset.y);
 }
 
-int	exit_win(void *p)
+int	exit_win(const t_fdf *fdf)
 {
+	cleanup(fdf);
 	exit(0);
 }
 
