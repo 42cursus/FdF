@@ -60,7 +60,7 @@ void	data_convert(t_fdf *fdf, t_map_row *row);
 void	on_expose(t_fdf *fdf);
 int		key_win(int key, t_fdf *fdf);
 int		mouse_win(int button, int x, int y, void *p);
-int		exit_win(void *p);
+int		exit_win(const t_fdf *fdf);
 int		expose_win(t_fdf *fdf);
 void	calculate_zoom(t_fdf *const fdf);
 t_point	get_point(t_fdf *fdf, t_map_row *row, int col, int crow);

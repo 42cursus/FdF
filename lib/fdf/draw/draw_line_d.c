@@ -97,6 +97,8 @@ void	draw_line_d(t_fdf *fdf, t_point p1, t_point p2)
 	else
 		res = ft_fdf_intep_d(fdf, p1, p2, orientation);
 	ft_draw_pix(fdf, res);
+	free(res->data);
+	free(res);
 }
 
 /**

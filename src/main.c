@@ -37,9 +37,9 @@ int	main(int argc, char **argv)
 		exit(1);
 	fdf->root = mlx_new_window(fdf->mlx, fdf->win.width,
 			fdf->win.height, "fdf");
-	mlx_mouse_hook(fdf->root, mouse_win, fdf);
 	mlx_expose_hook(fdf->root, expose_win, fdf);
-	mlx_hook(fdf->root, DestroyNotify, 0, exit_win, fdf->mlx);
+	mlx_mouse_hook(fdf->root, mouse_win, fdf);
+	mlx_hook(fdf->root, DestroyNotify, 0, exit_win, fdf);
 	mlx_keypress_hook(fdf);
 	mlx_loop(fdf->mlx);
 	return (EX_OK);

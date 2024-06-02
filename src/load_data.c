@@ -63,6 +63,8 @@ void	read_lines_from_file(t_fdf *fdf)
 		row->word_tab = w_tab;
 		row->next = fdf->map;
 		fdf->map = row;
+		free(line);
+		row->line = NULL;
 		line = get_next_line(fd);
 	}
 	close(fd);

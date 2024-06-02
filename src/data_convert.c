@@ -13,6 +13,8 @@
 #include "ft_fdf.h"
 #include <string.h>
 
+void	allocate_arrays(const t_fdf *fdf, t_map_row *row);
+
 void	data_convert(t_fdf *fdf, t_map_row *row)
 {
 	double	height;
@@ -20,8 +22,7 @@ void	data_convert(t_fdf *fdf, t_map_row *row)
 	int		curr;
 	int		col;
 
-	row->heights = (double *)malloc(fdf->cols * sizeof(double));
-	row->colours = (int *)malloc((fdf->cols) * sizeof(int));
+	allocate_arrays(fdf, row);
 	curr = fdf->cols;
 	while (curr--)
 		row->colours[curr] = WHITE_COLOR;
@@ -37,7 +38,23 @@ void	data_convert(t_fdf *fdf, t_map_row *row)
 			row->colours[curr] = (int)col;
 			fdf->custom_colour_flag = 1;
 		}
+		free(row->word_tab[curr]);
 	}
 	if (curr < fdf->cols)
 		exit(1);
+}
+
+void	allocate_arrays(const t_fdf *fdf, t_map_row *row)
+{
+	double		*heights;
+	int			*colours;
+
+	heights = (double *)malloc(fdf->cols * sizeof(double));
+	if (!heights)
+		exit_win(fdf);
+	row->heights = heights;
+	colours = (int *)malloc((fdf->cols) * sizeof(int));
+	if (!colours)
+		exit_win(fdf);
+	row->colours = colours;
 }
