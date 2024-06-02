@@ -15,33 +15,31 @@
 
 void data_convert(t_fdf *fdf, t_map_row *row)
 {
-	long			*long_array;
-	int				*int_array;
-	long			height;
-	char			*endptr;
-	int				curr_col;
+	double	height;
+	char	*endptr;
+	int		curr;
+	int		col;
 
-	long_array = (long *)malloc(fdf->cols * sizeof(long));
-	row->heights = long_array;
-	int_array = (int *)malloc(fdf->cols * sizeof(int));
-	row->colours = int_array;
-	curr_col = fdf->cols;
-	while (curr_col--)
-		row->colours[curr_col] = 0xffffff;
-	while(row->word_tab[++curr_col])
+	row->heights = (double *)malloc(fdf->cols * sizeof(double));
+	row->colours = (int *)malloc((fdf->cols) * sizeof(int));
+
+	curr = fdf->cols;
+	while (curr--)
+		row->colours[curr] = 0xffffff;
+	while(row->word_tab[++curr])
 	{
-		height = ft_strtol(row->word_tab[curr_col], &endptr, 0);
-		row->heights[curr_col] = height;
-		if ((long) fdf->max_height < row->heights[curr_col])
-			fdf->max_height = (int) row->heights[curr_col];
+		height = (double)ft_strtol(row->word_tab[curr], &endptr, 0);
+		row->heights[curr] = height;
+		if (fdf->max_height < row->heights[curr])
+			fdf->max_height = row->heights[curr];
 		if (*endptr == ',')
 		{
-			row->colours[curr_col] = (int)ft_strtoul(endptr + 1,
-													 NULL, 0);
+			col = (int)ft_strtoul(endptr + 1, NULL, 0);
+			row->colours[curr] = (int)col;
 			fdf->custom_colour_flag = 1;
 		}
 	}
-	if (curr_col < fdf->cols)
+	if (curr < fdf->cols)
 	{
 		ft_printf("Found wrong line length. Exiting.\n");
 		exit(1);

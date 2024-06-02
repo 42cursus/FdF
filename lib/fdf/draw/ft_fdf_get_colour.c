@@ -16,7 +16,7 @@ t_rgb	ft_fdf_int_to_color(int color)
 {
 	t_rgb	col;
 
-	col.r = color >> 16;
+	col.r = (color >> 16) % 256;
 	col.g = (color >> 8) % 256;
 	col.b = color % 256;
 	return (col);
