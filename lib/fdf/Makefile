@@ -14,7 +14,7 @@ NAME			:= libfdf.a
 TOPDIR			= $(PWD)
 CC				:= cc
 CFLAGS			:= -Wall -Wextra -Werror -Wimplicit -Wno-error=parentheses -Wno-error=unused-parameter
-INCLUDE_FLAGS	:= -I.  -I../ft/include -I../../include -I./include -I/usr/include
+INCLUDE_FLAGS	:= -I. -I../mlx -I../ft/include -I../../include -I./include -I/usr/include
 # GCC 8 implements -fmacro-prefix-map.
 #	Like -fdebug-prefix-map, it replaces a string prefix for the FILE macro.
 #	-ffile-prefix-map is the union of -fdebug-prefix-map and -fmacro-prefix-map

@@ -51,7 +51,7 @@ void	read_lines_from_file(t_fdf *fdf)
 	fd = open(fdf->filename, 0);
 	if (fd == -1)
 	{
-		ft_printf("No such file %s\n", fdf->filename);
+		ft_printf("Cannot open file %s\n", fdf->filename);
 		exit(1);
 	}
 	line = get_next_line(fd);

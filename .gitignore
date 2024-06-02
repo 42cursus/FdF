@@ -11,6 +11,7 @@
 # **************************************************************************** #
 
 FdF
+fdf
 resources/
 !/resources/maps.zip
 !/resources/program_screenshot.png

@@ -88,8 +88,7 @@ void	replace_image(t_fdf *fdf)
 
 int	exit_win(const t_fdf *fdf)
 {
-	cleanup(fdf);
-	exit(0);
+	exit(cleanup(fdf));
 }
 
 /**

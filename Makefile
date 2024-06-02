@@ -22,10 +22,10 @@
 #                                                                              #
 # **************************************************************************** #
 
-NAME			:= FdF
+NAME			:= fdf
 CC				:= cc
 INC_DIR			=  ./include
-INCLUDE_FLAGS	:= -I. -I $(INC_DIR) -I/usr/include
+INCLUDE_FLAGS	:= -I. -I $(INC_DIR) -I/usr/include -I./lib/mlx
 OPTIMIZE_FLAGS	:= -O0
 DEBUG_FLAGS		:= -g3 -gdwarf-3
 #MANDATORY_FLAGS	:= -Wall -Wextra -Werror
@@ -51,10 +51,13 @@ BUILD_DIR		= build
 SRC_DIR			= src
 OBJ_DIR			= $(BUILD_DIR)/obj
 
-SRC_FS	 		:= main.c \
-					load_data.c \
-					data_convert.c \
-					on_expose.c
+SRC_FS	 		:= cleanup.c \
+ 					data_convert.c \
+ 					hooks.c \
+ 					load_data.c \
+ 					main.c \
+ 					on_expose.c \
+ 					rotate.c
 SRCS	 		:= $(SRC_FS:%.c=$(SRC_DIR)/%.c)
 OBJS			= $(SRCS:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
 
@@ -82,11 +85,10 @@ test: $(NAME)
 		@printf '\033[36m%s\033[0m\n' 'this is a test'
 #		@rm -rf $(TEST_MAPS)
 #		@cd resources && unzip maps.zip
-		./FdF $(TEST_MAPS)/elem-col.fdf || true
-		./FdF $(TEST_MAPS)/elem2.fdf || true
-		./FdF $(TEST_MAPS)/t1.fdf || true
-		./FdF $(TEST_MAPS)/t1.fdf 9 2|| true
-#		./FdF $(TEST_MAPS)/t2.fdf || true
+		./$(NAME) $(TEST_MAPS)/elem-col.fdf || true
+		./$(NAME) $(TEST_MAPS)/elem2.fdf || true
+		./$(NAME) $(TEST_MAPS)/t1.fdf || true
+		./$(NAME) $(TEST_MAPS)/t2.fdf || true
 
 clean:
 		@$(RM) -fr $(OBJ_DIR)

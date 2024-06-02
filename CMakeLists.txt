@@ -7,8 +7,6 @@ set(CMAKE_THREAD_PREFER_PTHREAD TRUE)
 set(THREADS_PREFER_PTHREAD_FLAG TRUE)
 
 set(PARENT_PROJECT_NAME "${PROJECT_NAME}")
-#add_subdirectory(scratch)
-
 
 set(FT_LIB_NAME ft)
 set(FT_LIB_FILENAME libft.a)
@@ -77,7 +75,7 @@ set_target_properties(${FDF_LIB_NAME} PROPERTIES
         IMPORTED_LOCATION "${FDF_LIB_DIR}/${FDF_LIB_FILENAME}" # Make sure to use absolute path here
         INTERFACE_COMPILE_DEFINITIONS ""
         INTERFACE_SOURCES  "${FDF_LIB_HEADERS};${FDF_LIB_SOURCES}"
-        INTERFACE_INCLUDE_DIRECTORIES "${FDF_LIB_DIR};${PROJECT_SOURCE_DIR}/include")
+        INTERFACE_INCLUDE_DIRECTORIES "${FDF_LIB_DIR};${PROJECT_SOURCE_DIR}/include;${FDF_LIB_DIR}/include")
 
 add_custom_target(fclean ALL)
 add_custom_command(TARGET fclean POST_BUILD

@@ -16,9 +16,10 @@
 # include <stdbool.h>
 # include <stdio.h>
 # include <fdf/fdf_lib.h>
+# include <mlx_int.h>
 # include "ft/gnl.h"
 # include "ft/libft.h"
-# include "mlx.h"
+# include "mlx/mlx.h"
 # include "fdf/util.h"
 
 # define WHITE_COLOR 0xffffff
@@ -58,6 +59,7 @@ typedef struct s_fdf_struct {
 void	load_data(t_fdf *fdf);
 void	data_convert(t_fdf *fdf, t_map_row *row);
 void	on_expose(t_fdf *fdf);
+void	mlx_keypress_hook(t_fdf *const fdf);
 int		key_win(int key, t_fdf *fdf);
 int		mouse_win(int button, int x, int y, void *p);
 int		exit_win(const t_fdf *fdf);
