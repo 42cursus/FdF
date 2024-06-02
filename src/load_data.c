@@ -12,12 +12,12 @@
 
 #include "ft_fdf.h"
 
-void read_lines_from_file(t_fdf *fdf);
+void	read_lines_from_file(t_fdf *fdf);
 
-void load_data(t_fdf *fdf)
+void	load_data(t_fdf *fdf)
 {
-	t_map_row *next;
-	t_map_row *row;
+	t_map_row	*next;
+	t_map_row	*row;
 
 	read_lines_from_file(fdf);
 	row = NULL;
@@ -41,7 +41,7 @@ void load_data(t_fdf *fdf)
 	}
 }
 
-void read_lines_from_file(t_fdf *fdf)
+void	read_lines_from_file(t_fdf *fdf)
 {
 	int			fd;
 	char		*line;
@@ -51,10 +51,11 @@ void read_lines_from_file(t_fdf *fdf)
 	fd = open(fdf->filename, 0);
 	if (fd == -1)
 	{
-		ft_printf("No file %s\n", fdf->filename);
+		ft_printf("No such file %s\n", fdf->filename);
 		exit(1);
 	}
-	while (line = get_next_line(fd), line != NULL)
+	line = get_next_line(fd);
+	while (line)
 	{
 		row = (t_map_row *) malloc(sizeof(t_map_row));
 		row->line = line;
@@ -62,6 +63,7 @@ void read_lines_from_file(t_fdf *fdf)
 		row->word_tab = w_tab;
 		row->next = fdf->map;
 		fdf->map = row;
+		line = get_next_line(fd);
 	}
 	close(fd);
 }

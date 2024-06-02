@@ -13,78 +13,78 @@
 #include <sysexits.h>
 #include "ft_fdf.h"
 
-# define NUM_5	 0x35 /* (53) Number 5 on the main keyboard */
-# define ESC	 0xFF1B /* (53) Number 5 on the main keyboard */
-# define UP 65362
-# define DOWN 65364
-# define RIGHT 65363
-# define LEFT 65361
+#define NUM_5 0x35 /* (53) Number 5 on the main keyboard */
+#define ESC 0xFF1B /* (53) Number 5 on the main keyboard */
+#define UP 65362
+#define DOWN 65364
+#define RIGHT 65363
+#define LEFT 65361
 
-# define EXIT_KEY ESC
-
-int mouse_win(int button, int x, int y, void *p)
+int	mouse_win(int button, int x, int y, void *p)
 {
-	ft_printf("Mouse in Win1, button %d at %dx%d.\n", button, x, y);
-	t_fdf *fdf = (t_fdf *)p;
+	t_img	*im3;
+	double	step;
 
-	int img_width;
-	int img_height;
-	double step;
-
-	step = 0.5;
 	if (button == 5 || button == 4)
 	{
 		if (button == 5)
-			if (fdf->zoom > step * 2)
-				fdf->zoom -= step;
-		if (button == 4)
-			fdf->zoom += step;
-
-		img_width = (int) (fdf->win.width * fdf->zoom * 2);
-		img_height = (int) (fdf->win.height * fdf->zoom * 2);
-
-		fdf->offset.x = -((img_width / 2) - (fdf->win.width / 2));
-		fdf->offset.y = -((img_height / 2) - (fdf->win.height / 2));
-
-		fdf->draw_offset_x = img_width / 2.2;
-		fdf->draw_offset_y = img_height / 1.5;
-
-		t_img *im3 = mlx_new_image(fdf->mlx, img_width, img_height);
-		if (!im3) {
-			ft_printf(" !! KO !!\n");
-			exit(1);
+		{
+			step = ((t_fdf *) p)->zoom - (((t_fdf *) p)->zoom / 10);
+			if (step < 0.1)
+				return (EX_OK);
+			((t_fdf *) p)->zoom = step;
 		}
-		ft_printf("OK (bpp3 %d, sizeline3 %d endianness3 %d type %d)\n",
-				  im3->bpp, im3->size_line, im3->image->byte_order, im3->type);
-		mlx_destroy_image(fdf->mlx, fdf->canvas);
-		fdf->canvas = im3;
-		on_expose(fdf);
+		if (button == 4)
+		{
+			step = ((t_fdf *) p)->zoom + (((t_fdf *) p)->zoom / 10);
+			if (step > 70)
+				return (EX_OK);
+			((t_fdf *) p)->zoom += (((t_fdf *) p)->zoom / 10);
+		}
+		replace_image((t_fdf *) p);
+		on_expose((t_fdf *) p);
 	}
 	return (EX_OK);
 }
 
-int key_win(int key, t_fdf *fdf)
+int	key_win(int key, t_fdf *fdf)
 {
-	int		step = 25;
-	static	t_point offset = {0};
+	int				step;
+	static t_point	offset = {0};
 
-//	printf("Key in Win1 : %d\n", key);
+	step = 25;
 	if (key == NUM_5 || key == ESC)
 		exit(0);
 	if (key == RIGHT)
-		fdf->offset.x += step;
+		fdf->draw_offset_x += step;
 	if (key == LEFT)
-		fdf->offset.x -= step;
+		fdf->draw_offset_x -= step;
 	if (key == UP)
-		fdf->offset.y -= step;
+		fdf->draw_offset_y -= step;
 	if (key == DOWN)
-		fdf->offset.y += step;
-	mlx_clear_window(fdf->mlx, fdf->root);
-	mlx_put_image_to_window(fdf->mlx, fdf->root, fdf->canvas, fdf->offset.x, fdf->offset.y);
+		fdf->draw_offset_y += step;
+	replace_image(fdf);
+	on_expose(fdf);
 	return (0);
 }
 
-int exit_win(void *p)
+void	replace_image(t_fdf *fdf)
+{
+	t_img	*im3;
+
+	im3 = mlx_new_image(fdf->mlx, fdf->win.width, fdf->win.height);
+	if (!im3)
+	{
+		ft_printf(" !! KO !!\n");
+		exit(1);
+	}
+	mlx_destroy_image(fdf->mlx, fdf->canvas);
+	fdf->canvas = im3;
+	mlx_put_image_to_window(fdf->mlx, fdf->root,
+		fdf->canvas, fdf->offset.x, fdf->offset.y);
+}
+
+int	exit_win(void *p)
 {
 	exit(0);
 }
@@ -94,8 +94,17 @@ int exit_win(void *p)
  * https://tronche.com/gui/x/xlib/events/exposure/expose.html
  * https://tronche.com/gui/x/xlib/window/attributes/#XSetWindowAttributes
  */
-int expose_win(void *fdf) {
-	ft_printf("Expose window hook. Param: %d\n", *(int *)fdf);
+int	expose_win(t_fdf *fdf)
+{
+	t_img	*im3;
+
+	im3 = mlx_new_image(fdf->mlx, fdf->win.width, fdf->win.height);
+	if (!im3)
+	{
+		ft_printf(" !! KO !!\n");
+		exit(1);
+	}
+	fdf->canvas = im3;
 	on_expose(fdf);
 	return (EX_OK);
 }
