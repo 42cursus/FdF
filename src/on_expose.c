@@ -44,12 +44,12 @@ void ft_draw_pix(t_fdf *fdf, t_cont *ptr)
 	while(++i < size)
 	{
 		p = pts[i];
-		if ((p.x < 0 ) || (p.y < 0 ))
+		if ((p.x < 0 ) || (p.y < 0 )
+			|| (p.x > fdf->canvas->width ) || (p.y > fdf->canvas->height ))
 			continue ;
-//		mlx_pixel_put(fdf->mlx, fdf->root, p.x, p.y, p.col);
 		offset = img->data + (img->size_line * p.y) + (p.x * (img->bpp / 8));
-		*((unsigned int *)(offset)) = p.col;
-//		(unsigned int *)(img->data)[offset] = p.col;
+		*(int *)offset = p.col;
+//		img->data[(img->size_line * p.y) + (p.x * (img->bpp / 8))] = p.col;
 	}
 }
 
@@ -66,6 +66,9 @@ struct s_list2
 	t_list	*next;
 };
 
+t_point
+get_point(t_fdf *fdf, t_map_row *row, int col, int crow);
+
 /**
  * The XSync function flushes the output buffer and then waits until
  * all requests have been received and processed by the X server.
@@ -81,68 +84,41 @@ void on_expose(t_fdf *fdf)
 {
 	t_list *point_list = NULL;
 	t_map_row *row;
-	t_point *const t1 = &(t_point){};
-	t_point *const t2 = &(t_point){};
+	t_point t1 = (t_point){};
+	t_point t2 = (t_point){};
+	t_point t3 = (t_point){};
+	t_point t4 = (t_point){};
 	int cr;
 	int cc;
 	void	(*f)(void *);
 
 	row = fdf->map;
-
-	long height = fdf->draw_offset_y;
-	int width = fdf->draw_offset_x;
-
 	cr = fdf->rows;
 	while (--cr)
 	{
 		cc = fdf->cols;
 		while (--cc)
 		{
-			long h1 = row->heights[cc] * fdf->z_scale;
-			long h2 = row->heights[(cc - 1)] * fdf->z_scale;
+			t1 = get_point(fdf, row, cc, cr);
+			t2 = get_point(fdf, row, cc - 1, cr);
+			t3 = get_point(fdf, row->next, cc, cr - 1);
+			t4 = get_point(fdf, row->next, cc - 1, cr - 1);
 
-			long h3 = row->next->heights[cc] * fdf->z_scale;
-
-			long h4 = row->next->heights[(cc - 1)] * fdf->z_scale;
-
-			int x1 = cc * fdf->xy_scale * 7;
-			int y1 = cr * fdf->xy_scale * 7;
-
-			int x2 = (cc - 1) * fdf->xy_scale * 7;
-			int y2 = (cr - 1) * fdf->xy_scale * 7;
-
-			*t1 = (t_point){
-				.x = (x1 / 10 - y1 / 10) + width,
-				.y = height - (h1 + x1 / 20 + y1 / 20),
-				.col = row->colours[cc]};
-
-			t2->x = (x2 / 10 - y1 / 10) + width;
-			t2->y = height - (h2 + x2 / 20 + y1 / 20);
-			t2->col = row->colours[(cc - 1)];
-
-			ft_list_push_front(&point_list, draw_line_d(fdf, *t1, *t2));
-
-			t2->x = (x1 / 10 - y2 / 10) + width;
-			t2->y = height - (h3 + x1 / 20 + y2 / 20);
-			t2->col = row->next->colours[cc];
-
-			ft_list_push_front(&point_list, draw_line_d(fdf,  *t1, *t2));
-
+			ft_list_push_front(&point_list, draw_line_d(fdf, t1, t2)); // up
+			ft_list_push_front(&point_list, draw_line_d(fdf,  t1, t3)); // right
+			if (cr == 1)
+				ft_list_push_front(&point_list,
+								   draw_line_d(fdf, t3, t4)); // down
 			if (fdf->custom_colour_flag)
-			{
-				t2->x = (x2 / 10 - y2 / 10) + width;
-				t2->y = height - (h4 + x2 / 20 + y2 / 20);
-				t2->col = row->next->colours[(cc - 1)];
-				ft_list_push_front(&point_list, draw_line_d(fdf, *t1,*t2));
-			}
-
+				ft_list_push_front(&point_list, draw_line_d(fdf, t1, t4)); // diag
 		}
+		ft_list_push_front(&point_list,
+						   draw_line_d(fdf, t2, t4)); //left
 		row = row->next;
 	}
+
 	ft_list_foreach(point_list, (void (*)(void *))({
-		void lambda_fun(void *data){
-			ft_draw_pix(fdf,(t_cont *)data);
-		}
+		void lambda_fun(void *data){ft_draw_pix(fdf,(t_cont *)data);}
 		lambda_fun;
 	}));
 	ft_list_clear(point_list, (void (*)(void *)) del_fun);
@@ -151,3 +127,61 @@ void on_expose(t_fdf *fdf)
 	mlx_put_image_to_window(fdf->mlx, fdf->root, fdf->canvas, fdf->offset.x, fdf->offset.y);
 }
 
+void	rotate_x(t_point *point, double angle);
+void	rotate_z(t_point *point, double angle);
+void	rotate_y(t_point *point, double angle);
+
+t_point get_point(t_fdf *fdf, t_map_row *row, int col, int crow)
+{
+	t_point t1;
+	t_point t2;
+
+	int div1 = 10;
+	int div2 = 20;
+//	fdf->zoom = 1.5;
+
+	t1.x = col * fdf->xy_scale * 7 * fdf->zoom;
+	t1.y = crow * fdf->xy_scale * 7 * fdf->zoom;
+	t1.z = (int) (row->heights[col] * fdf->z_scale * fdf->zoom);
+
+	t2.x = (t1.x / div1 - t1.y / div1) + fdf->draw_offset_x;
+	t2.y = fdf->draw_offset_y - (t1.z + t1.x / div2 + t1.y / div2);
+	t2.z = t1.z;
+
+	t2.col = row->colours[col];
+	return (t2);
+}
+
+
+void	rotate_x(t_point *point, double angle)
+{
+	double	y;
+	double	z;
+
+	y = point->y;
+	z = point->z;
+	point->y = (int)(y * cos(angle) - z * sin(angle));
+	point->z = (int)(y * sin(angle) + z * cos(angle));
+}
+
+void	rotate_z(t_point *point, double angle)
+{
+	double	x;
+	double	y;
+
+	x = point->x;
+	y = point->y;
+	point->x = x * cos(angle) - y * sin(angle);
+	point->y = x * sin(angle) + y * cos(angle);
+}
+
+void	rotate_y(t_point *point, double angle)
+{
+	double	x;
+	double	z;
+
+	x = point->x;
+	z = point->z;
+	point->x = x * cos(angle) + z * sin(angle);
+	point->z = -x * sin(angle) + z * cos(angle);
+}

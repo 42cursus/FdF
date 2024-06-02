@@ -36,7 +36,6 @@ t_cont	*ft_fdf_intep_d(t_fdf *fdf, t_point p1, t_point p2, int orientation)
 	if (p2.x < p1.x)
 		inc = -1;
 	res = (t_points *) ft_init_tab(((p2.x - p1.x) * inc));
-	p3 = (t_point) {.x = p1.x, .y = p2.y, .col = p2.col};
 	curr = p1.x;
 	i = -1;
 	while (++i < res->size) //	while (curr * inc <= p2.x * inc)
@@ -46,7 +45,8 @@ t_cont	*ft_fdf_intep_d(t_fdf *fdf, t_point p1, t_point p2, int orientation)
 		p3.col = ft_fdf_get_color(p1, p2, curr);
 		if (orientation == 0)
 			ft_swap_xy(&p3);
-		res->data[i] = p3; //		((t_point *) (res->data))[i] = p3;
+//		res->data[i] = p3;
+				((t_point *) (res->data))[i] = p3;
 		curr += inc;
 	}
 	return (t_cont *) (res);
