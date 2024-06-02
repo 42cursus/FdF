@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <fdf/fdf_lib.h>
+#include "fdf_lib.h"
 #include <ft_fdf.h>
 #include <errno.h>
 

@@ -14,6 +14,7 @@
 
 int	cleanup(const t_fdf *fdf)
 {
+	int			errcode;
 	t_map_row	*row;
 	t_map_row	*curr;
 
@@ -27,9 +28,13 @@ int	cleanup(const t_fdf *fdf)
 		row = row->next;
 		free(curr);
 	}
-	mlx_destroy_image(fdf->mlx, fdf->canvas);
-	mlx_destroy_window(fdf->mlx, fdf->root);
-	mlx_destroy_display(fdf->mlx);
+	errcode = mlx_destroy_image(fdf->mlx, fdf->canvas);
+	if (errcode)
+		return (errcode);
+	errcode = mlx_destroy_window(fdf->mlx, fdf->root);
+	if (errcode)
+		return (errcode);
+	errcode = mlx_destroy_display(fdf->mlx);
 	free(fdf->mlx);
-	return (0);
+	return (errcode);
 }

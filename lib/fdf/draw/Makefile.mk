@@ -10,6 +10,7 @@
 #                                                                              #
 # **************************************************************************** #
 
-FILES   = draw_line_d.c
+FILES   = draw_line_d.c \
+			ft_fdf_get_colour.c
 
 SRCS    += $(patsubst %.c,draw/%.c,$(FILES))
