@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #ifndef UTIL_H
-#define UTIL_H
+# define UTIL_H
 
 int	check_endianness(void);
 
