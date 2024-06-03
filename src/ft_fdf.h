@@ -25,7 +25,8 @@
 # define WHITE_COLOR 0xffffff
 
 typedef struct s_map_row	t_map_row;
-struct s_map_row {
+struct s_map_row
+{
 	char		*line;
 	char		**word_tab;
 	double		*heights;
@@ -33,8 +34,10 @@ struct s_map_row {
 	t_map_row	*next;
 };
 
-typedef struct s_fdf_struct {
-	struct s_fdf_win {
+typedef struct s_fdf_struct
+{
+	struct s_fdf_win
+	{
 		int	width;
 		int	height;
 	}			win;

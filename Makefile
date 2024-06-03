@@ -10,26 +10,13 @@
 #                                                                              #
 # **************************************************************************** #
 
-# **************************************************************************** #
-#                                                                              #
-#                                                         :::      ::::::::    #
-#    Makefile                                           :+:      :+:    :+:    #
-#                                                     +:+ +:+         +:+      #
-#    By: abelov <abelov@student.42london.com>       +#+  +:+       +#+         #
-#                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2023/10/23 22:28:51 by abelov            #+#    #+#              #
-#    Updated: 2023/10/23 22:34:31 by abelov           ###   ########.fr        #
-#                                                                              #
-# **************************************************************************** #
-
 NAME			:= fdf
 CC				:= cc
 INC_DIR			=  ./include
 INCLUDE_FLAGS	:= -I. -I $(INC_DIR) -I/usr/include -I./lib/mlx
 OPTIMIZE_FLAGS	:= -O0
 DEBUG_FLAGS		:= -g3 -gdwarf-3
-#MANDATORY_FLAGS	:= -Wall -Wextra -Werror
-MANDATORY_FLAGS	:=
+MANDATORY_FLAGS	:= -Wall -Wextra -Werror
 CFLAGS			= $(MANDATORY_FLAGS) $(DEBUG_FLAGS) $(OPTIMIZE_FLAGS) $(INCLUDE_FLAGS)
 
 TEST_MAPS		=  ./resources/test_maps

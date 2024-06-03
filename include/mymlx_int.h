@@ -47,7 +47,8 @@ struct s_col_name
 	int		color;
 };
 
-typedef struct s_event_list {
+typedef struct s_event_list
+{
 	int		mask;
 	int		(*hook)();
 	void	*param;

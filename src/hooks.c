@@ -24,9 +24,9 @@ int	cleanup(const t_fdf *fdf);
 
 int	mouse_win(int button, int x, int y, void *p)
 {
-	t_img	*im3;
 	double	step;
 
+	((void)x, (void)y);
 	if (button == 5 || button == 4)
 	{
 		if (button == 5)
@@ -52,7 +52,6 @@ int	mouse_win(int button, int x, int y, void *p)
 int	key_win(int key, t_fdf *fdf)
 {
 	int				step;
-	static t_point	offset = {0};
 
 	step = 25;
 	if (key == NUM_5 || key == ESC)
