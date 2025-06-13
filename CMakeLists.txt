@@ -1,3 +1,15 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    CMakeLists.txt                                     :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: abelov <abelov@student.42london.com>       +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2025/06/12 16:34:04 by abelov            #+#    #+#              #
+#    Updated: 2025/06/12 16:34:05 by abelov           ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
 cmake_minimum_required(VERSION 3.8)
 
 project(FdF C)
@@ -8,37 +20,23 @@ set(THREADS_PREFER_PTHREAD_FLAG TRUE)
 
 set(PARENT_PROJECT_NAME "${PROJECT_NAME}")
 
-set(FT_LIB_NAME ft)
-set(FT_LIB_FILENAME libft.a)
-set(FT_LIB_DIR "${PROJECT_SOURCE_DIR}/lib/ft")
 
-file(GLOB_RECURSE FT_LIB_HEADERS "${FT_LIB_DIR}/*.h")
-file(GLOB_RECURSE FT_LIB_SOURCES "${FT_LIB_DIR}/*.c")
-
-add_custom_target(${FT_LIB_NAME}_target ALL
-        COMMAND make -C ${FT_LIB_DIR}
-        BYPRODUCTS "${FT_LIB_DIR}/${FT_LIB_FILENAME}"
-        SOURCES "${FT_LIB_HEADERS};${FT_LIB_SOURCES}"
-        COMMENT "Building FT_LIB")
-
-add_library(${FT_LIB_NAME} STATIC IMPORTED)
-add_dependencies(${FT_LIB_NAME} "${FT_LIB_NAME}_target")
-set_target_properties(${FT_LIB_NAME} PROPERTIES
-        IMPORTED_LOCATION ${FT_LIB_DIR}/${FT_LIB_FILENAME} # Make sure to use absolute path here
-        INTERFACE_COMPILE_DEFINITIONS ""
-        INTERFACE_LINK_OPTIONS ""
-        INTERFACE_SOURCES "${FT_LIB_HEADERS}"
-        INTERFACE_INCLUDE_DIRECTORIES "${FT_LIB_DIR};${FT_LIB_DIR}/include")
+#==============================================================================#
+# MLX lib
+#==============================================================================#
 
 set(MLX_LIB_NAME mlx)
 set(MLX_LIB_FILENAME libmlx.a)
 set(MLX_LIB_DIR "${PROJECT_SOURCE_DIR}/lib/mlx")
+set(MLX_LIB_PATH "${MLX_LIB_DIR}/${MLX_LIB_FILENAME}")
+set(MLX_BUILD_DIR "${CMAKE_BINARY_DIR}/mlx_build")
 
 file(GLOB_RECURSE MLX_LIB_HEADERS "${MLX_LIB_DIR}/*.h")
 list(FILTER MLX_LIB_HEADERS EXCLUDE REGEX "${MLX_LIB_DIR}/test/*" )
 file(GLOB_RECURSE MLX_LIB_SOURCES "${MLX_LIB_DIR}/*.c")
 list(FILTER MLX_LIB_SOURCES EXCLUDE REGEX "${MLX_LIB_DIR}/test/*|${MLX_LIB_DIR}/mlx_lib_xpm.c")
 
+# Custom target to build and patch MLX
 add_custom_target(${MLX_LIB_NAME}_target ALL
         COMMAND make -C ${MLX_LIB_DIR}
         BYPRODUCTS "${MLX_LIB_DIR}/${MLX_LIB_FILENAME}"
@@ -53,6 +51,34 @@ set_target_properties(${MLX_LIB_NAME} PROPERTIES
         INTERFACE_SOURCES "${MLX_LIB_HEADERS}"
         INTERFACE_INCLUDE_DIRECTORIES "${MLX_LIB_DIR}")
 
+#==============================================================================#
+# FT lib
+#==============================================================================#
+
+set(FT_LIB_NAME ft)
+set(FT_LIB_FILENAME libft.a)
+set(FT_LIB_DIR "${PROJECT_SOURCE_DIR}/lib/ft")
+
+file(GLOB_RECURSE FT_LIB_HEADERS "${FT_LIB_DIR}/*.h")
+file(GLOB_RECURSE FT_LIB_SOURCES "${FT_LIB_DIR}/ft_*.c")
+
+add_custom_target(${FT_LIB_NAME}_target ALL
+        COMMAND make -C ${FT_LIB_DIR} #BUILD_WITH_ASAN=1
+        BYPRODUCTS "${FT_LIB_DIR}/${FT_LIB_FILENAME}"
+        SOURCES "${FT_LIB_HEADERS};${FT_LIB_SOURCES}"
+        COMMENT "Building FT_LIB")
+
+add_library(${FT_LIB_NAME} STATIC IMPORTED)
+
+add_dependencies(${FT_LIB_NAME} "${FT_LIB_NAME}_target")
+set_target_properties(${FT_LIB_NAME} PROPERTIES
+        IMPORTED_LOCATION ${FT_LIB_DIR}/${FT_LIB_FILENAME}
+        INTERFACE_COMPILE_DEFINITIONS ""
+        INTERFACE_LINK_OPTIONS ""
+        INTERFACE_SOURCES "${FT_LIB_HEADERS}"
+        INTERFACE_INCLUDE_DIRECTORIES "${FT_LIB_DIR};${FT_LIB_DIR}/include")
+
+#===========================================================================
 
 set(FDF_LIB_NAME fdf)
 set(FDF_LIB_FILENAME libfdf.a)
@@ -76,6 +102,8 @@ set_target_properties(${FDF_LIB_NAME} PROPERTIES
         INTERFACE_COMPILE_DEFINITIONS ""
         INTERFACE_SOURCES  "${FDF_LIB_HEADERS};${FDF_LIB_SOURCES}"
         INTERFACE_INCLUDE_DIRECTORIES "${FDF_LIB_DIR};${PROJECT_SOURCE_DIR}/include;${FDF_LIB_DIR}/include")
+
+#===========================================================================
 
 add_custom_target(fclean ALL)
 add_custom_command(TARGET fclean POST_BUILD
@@ -109,7 +137,10 @@ target_compile_options(${TARGET_NAME} PRIVATE
 #        -fsanitize=address
 #        -fsanitize=leak
 )
-target_include_directories(${TARGET_NAME} PRIVATE "${PROJECT_SOURCE_DIR}/include")
+target_include_directories(${TARGET_NAME}
+        PRIVATE
+            "${PROJECT_SOURCE_DIR}/include"
+            "${PROJECT_SOURCE_DIR}/include")
 target_link_libraries(${TARGET_NAME}
         "${TARGET_LIBRARIES}"
         bsd Xt Xm Mrm X11 Xext Xrandr Xpm)

@@ -13,38 +13,32 @@
 #include <sysexits.h>
 #include "ft_fdf.h"
 
-#define NUM_5 0x35 /* (53) Number 5 on the main keyboard */
-#define ESC 0xFF1B /* (53) Number 5 on the main keyboard */
-#define UP 65362
-#define DOWN 65364
-#define RIGHT 65363
-#define LEFT 65361
-
 int	cleanup(const t_fdf *fdf);
 
 int	mouse_win(int button, int x, int y, void *p)
 {
-	double	step;
+	double			step;
+	t_fdf *const	app = p;
 
 	((void)x, (void)y);
 	if (button == 5 || button == 4)
 	{
 		if (button == 5)
 		{
-			step = ((t_fdf *) p)->zoom - (((t_fdf *) p)->zoom / 10);
+			step = app->zoom - (app->zoom / 10);
 			if (step < 0.1)
 				return (EX_OK);
-			((t_fdf *) p)->zoom = step;
+			app->zoom = step;
 		}
 		if (button == 4)
 		{
-			step = ((t_fdf *) p)->zoom + (((t_fdf *) p)->zoom / 10);
+			step = app->zoom + (app->zoom / 10);
 			if (step > 70)
 				return (EX_OK);
-			((t_fdf *) p)->zoom += (((t_fdf *) p)->zoom / 10);
+			app->zoom += (app->zoom / 10);
 		}
-		replace_image((t_fdf *) p);
-		on_expose((t_fdf *) p);
+		replace_image(app);
+		on_expose(app);
 	}
 	return (EX_OK);
 }
@@ -54,15 +48,15 @@ int	key_win(int key, t_fdf *fdf)
 	int				step;
 
 	step = 25;
-	if (key == NUM_5 || key == ESC)
+	if (key == XK_KP_5 || key == XK_Escape)
 		exit_win(fdf);
-	if (key == RIGHT)
+	if (key == XK_Right)
 		fdf->draw_offset_x += step;
-	if (key == LEFT)
+	if (key == XK_Left)
 		fdf->draw_offset_x -= step;
-	if (key == UP)
+	if (key == XK_Up)
 		fdf->draw_offset_y -= step;
-	if (key == DOWN)
+	if (key == XK_Down)
 		fdf->draw_offset_y += step;
 	replace_image(fdf);
 	on_expose(fdf);
@@ -97,15 +91,15 @@ int	exit_win(const t_fdf *fdf)
  */
 int	expose_win(t_fdf *fdf)
 {
-	t_img	*im3;
+	t_img	*cnvs;
 
-	im3 = mlx_new_image(fdf->mlx, fdf->win.width, fdf->win.height);
-	if (!im3)
+	cnvs = mlx_new_image(fdf->mlx, fdf->win.width, fdf->win.height);
+	if (!cnvs)
 	{
 		ft_printf(" !! KO !!\n");
 		exit(1);
 	}
-	fdf->canvas = im3;
+	fdf->canvas = cnvs;
 	on_expose(fdf);
 	return (EX_OK);
 }

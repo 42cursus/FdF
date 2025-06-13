@@ -91,8 +91,7 @@ void	draw_line_d(t_fdf *fdf, t_point p1, t_point p2)
 	if ((p2.x == p1.x) && (p2.y == p1.y))
 	{
 		res = ft_init_tab(1);
-		*(t_point *)(res->data) = (t_point){.x = p1.x,
-			.y = p2.y, .col = p2.col};
+		*(t_point *)(res->data) = (t_point){.x = p1.x, .y = p2.y, .col = p2.col};
 	}
 	else
 		res = ft_fdf_intep_d(fdf, p1, p2, orientation);

@@ -68,14 +68,14 @@ $(LIBFDF):
 $(NAME): $(LIBS) $(OBJS)
 		$(CC) $(CFLAGS) $(INCLUDE_FLAGS) -o $@ $^  $(LINK_FLAGS)
 
-test: $(NAME)
+test: fdf
 		@printf '\033[36m%s\033[0m\n' 'this is a test'
 #		@rm -rf $(TEST_MAPS)
 #		@cd resources && unzip maps.zip
-		./$(NAME) $(TEST_MAPS)/elem-col.fdf || true
-		./$(NAME) $(TEST_MAPS)/elem2.fdf || true
-		./$(NAME) $(TEST_MAPS)/t1.fdf || true
-		./$(NAME) $(TEST_MAPS)/t2.fdf || true
+		./fdf $(TEST_MAPS)/elem-col.fdf || true
+		./fdf $(TEST_MAPS)/elem2.fdf || true
+		./fdf $(TEST_MAPS)/t1.fdf || true
+		./fdf $(TEST_MAPS)/t2.fdf || true
 
 clean:
 		@$(RM) -fr $(OBJ_DIR)
@@ -84,13 +84,11 @@ clean:
 		@$(MAKE) -C $(LIBX_PATH) clean
 
 fclean: clean
-		@$(RM) -fr $(NAME) $(BUILD_DIR) a.out
+		@$(RM) -fr fdf $(BUILD_DIR) a.out
 
 re: fclean all
 
 norm:
-		@norminette $(SRCS)
+		@norminette $(SRCS) --use-gitignore
 		@$(MAKE) -C $(LIBFT_PATH) norm
 		@$(MAKE) -C $(LIBFDF_PATH) norm
-
-
