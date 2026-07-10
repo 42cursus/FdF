@@ -20,7 +20,8 @@ void	replace_image(t_fdf *fdf)
 	im3 = mlx_new_image(fdf->mlx, fdf->win.width, fdf->win.height);
 	if (!im3)
 		exit(cleanup(fdf) + 1);
-	mlx_destroy_image(fdf->mlx, fdf->canvas);
+	if (fdf->canvas)
+		mlx_destroy_image(fdf->mlx, fdf->canvas);
 	fdf->canvas = im3;
 	mlx_put_image_to_window(fdf->mlx, fdf->root,
 		fdf->canvas, fdf->offset.x, fdf->offset.y);
@@ -45,12 +46,13 @@ int	exit_win(const t_fdf *fdf)
  */
 int	expose_win(t_fdf *fdf)
 {
-	t_img	*cnvs;
-
-	cnvs = mlx_new_image(fdf->mlx, fdf->win.width, fdf->win.height);
-	if (!cnvs)
-		exit(cleanup(fdf) + 1);
-	fdf->canvas = cnvs;
+	if (!fdf->canvas)
+	{
+		fdf->canvas = mlx_new_image(fdf->mlx, fdf->win.width,
+				fdf->win.height);
+		if (!fdf->canvas)
+			exit(cleanup(fdf) + 1);
+	}
 	on_expose(fdf);
 	return (EX_OK);
 }

@@ -17,8 +17,8 @@ int	fdf_line_outside(t_img *img, t_point p1, t_point p2)
 {
 	int	outside;
 
-	outside = (p1.x <= 0) & (p2.x <= 0);
-	outside |= (p1.y <= 0) & (p2.y <= 0);
+	outside = (p1.x < 0) & (p2.x < 0);
+	outside |= (p1.y < 0) & (p2.y < 0);
 	outside |= (p1.x >= img->width) & (p2.x >= img->width);
 	outside |= (p1.y >= img->height) & (p2.y >= img->height);
 	return (outside);
@@ -30,7 +30,7 @@ void	fdf_draw_pixel(t_fdf *fdf, t_point p)
 	t_img	*img;
 
 	img = fdf->canvas;
-	if ((p.x <= 0) || (p.y <= 0) || (p.x >= img->width)
+	if ((p.x < 0) || (p.y < 0) || (p.x >= img->width)
 		|| (p.y >= img->height))
 		return ;
 	*(int *)(img->data + (img->size_line * p.y)
