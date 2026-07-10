@@ -20,7 +20,7 @@ t_point	project_iso(t_fdf *fdf, t_transform transform)
 			* transform.scale / FDF_ISO_X_DIVISOR
 			+ fdf->win.width / 2 + fdf->view.pan_x);
 	out.y = (int)(fdf->win.height / 2
-			+ (transform.point.x + transform.point.y)
+			- (transform.point.x + transform.point.y)
 			* transform.scale / FDF_ISO_Y_DIVISOR
 			- transform.point.z * transform.scale / FDF_ISO_X_DIVISOR
 			+ fdf->view.pan_y);
@@ -37,7 +37,7 @@ t_point	project_parallel(t_fdf *fdf, t_transform transform)
 				/ FDF_PARALLEL_DEPTH_DIVISOR) * transform.scale
 			/ FDF_PARALLEL_DIVISOR + fdf->win.width / 2
 			+ fdf->view.pan_x);
-	out.y = (int)((transform.point.y / FDF_PARALLEL_DEPTH_DIVISOR
+	out.y = (int)((-transform.point.y / FDF_PARALLEL_DEPTH_DIVISOR
 				- transform.point.z) * transform.scale / FDF_PARALLEL_DIVISOR
 			+ fdf->win.height / 2 + fdf->view.pan_y);
 	out.z = (int)(transform.point.z * transform.scale);
@@ -53,7 +53,7 @@ t_point	project_cabinet(t_fdf *fdf, t_transform transform)
 				/ FDF_CABINET_DEPTH_DIVISOR) * transform.scale
 			/ FDF_CABINET_X_DIVISOR + fdf->win.width / 2
 			+ fdf->view.pan_x);
-	out.y = (int)((transform.point.y / FDF_CABINET_DEPTH_DIVISOR
+	out.y = (int)((-transform.point.y / FDF_CABINET_DEPTH_DIVISOR
 				- transform.point.z) * transform.scale / FDF_CABINET_X_DIVISOR
 			+ fdf->win.height / 2 + fdf->view.pan_y);
 	out.z = (int)(transform.point.z * transform.scale);

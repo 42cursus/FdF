@@ -21,7 +21,7 @@ void	data_convert(t_fdf *fdf, t_map_row *row)
 	int		curr;
 	int		row_size;
 
-	row_size = (int)ft_get_tab_size((void **) row->word_tab);
+	row_size = (int)ft_tab_get_size((void const **) row->word_tab);
 	if (row_size != fdf->cols)
 	{
 		ft_printf("Found wrong line length. Exiting.\n");

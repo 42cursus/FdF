@@ -32,7 +32,7 @@ void	load_data(t_fdf *fdf)
 	fdf->map = row;
 	if (!fdf->map || !fdf->map->word_tab)
 		return ;
-	fdf->cols = (int)ft_get_tab_size((void **) fdf->map->word_tab);
+	fdf->cols = (int)ft_tab_get_size((void const **) fdf->map->word_tab);
 	fdf->rows = 0;
 	fdf->max_height = 0;
 	row = fdf->map;

@@ -13,7 +13,7 @@
 NAME			:= fdf
 CC				:= cc
 INC_DIR			=  ./include
-INCLUDE_FLAGS	:= -I. -I $(INC_DIR) -I/usr/include -I./lib/mlx
+INCLUDE_FLAGS	:= -I. -I $(INC_DIR) -I/usr/include -I./lib/mlx -I./lib/ft/include
 OPTIMIZE_FLAGS	:= -O0
 DEBUG_FLAGS		:= -g3 -gdwarf-3
 MANDATORY_FLAGS	:= -Wall -Wextra -Werror
@@ -58,8 +58,8 @@ all: $(NAME)
 
 bonus: all
 
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c $(SRC_DIR)/ft_fdf.h
-		@mkdir -p $(@D)
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
+		@if [ ! -d $(@D) ]; then mkdir -p $(@D); fi
 		$(CC) $(CFLAGS) $(INCLUDE_FLAGS) -o $@ -c $<
 
 $(LIBFT):

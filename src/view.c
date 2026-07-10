@@ -21,7 +21,7 @@ void	init_view(t_fdf *fdf)
 	fdf->view.rot_x = 0;
 	fdf->view.rot_y = 0;
 	fdf->view.rot_z = 0;
-	fdf->view.z_factor = 1.0;
+	fdf->view.z_factor = 8.0;
 	fdf->view.dirty = 1;
 	fdf->view.mouse_active = 0;
 	fdf->view.drag = 0;
@@ -44,7 +44,7 @@ void	fdf_reset_view(t_fdf *fdf)
 	fdf->view.rot_x = 0;
 	fdf->view.rot_y = 0;
 	fdf->view.rot_z = 0;
-	fdf->view.z_factor = 1.0;
+	fdf->view.z_factor = 8.0;
 	fdf->view.mouse_active = 0;
 	fdf->view.drag = 0;
 	fdf->view.mouse_x = fdf->win.width / 2;
