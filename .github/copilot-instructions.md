@@ -37,5 +37,6 @@
 - The first parsed row sets `fdf->cols`; `data_convert()` assumes every later row has the same width and exits on shorter rows.
 - Map tokens support both bare heights and `height,color` entries. Colors default to `WHITE_COLOR` and `custom_colour_flag` flips on only when any explicit color is present.
 - Every interactive redraw follows the same pattern: mutate `t_fdf`, call `replace_image()`, then call `on_expose()`. Preserve that flow when adding new controls.
-- Projection math lives in `get_point()` and currently uses an isometric-style transform derived from `xy_scale`, `z_scale`, `zoom`, and draw offsets. Rendering changes usually need coordinated updates in both `calculate_zoom()` and `get_point()`.
+- View controls are centralized in `t_fdf.view`: mouse wheel zooms toward the pointer, `1`/`2`/`3` switch projection, arrows and middle-button drag pan, and `Q`/`E`/`W`/`S`/`A`/`D` rotate.
+- Projection math lives in `src/projection.c`. It rotates normalized world coordinates, then applies the selected projection and screen scaling. Rendering changes usually need coordinated updates in both `calculate_zoom()` and `get_point()`.
 - Do not reintroduce a separate `lib/fdf` library; new FdF-specific sources should be added to `SRC_FS` in the top-level Makefile.

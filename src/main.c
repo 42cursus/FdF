@@ -6,7 +6,7 @@
 /*   By: abelov <abelov@student.42london.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/18 07:18:11 by abelov            #+#    #+#             */
-/*   Updated: 2024/05/18 07:18:12 by abelov           ###   ########.fr       */
+/*   Updated: 2026/07/10 18:35:23 by abelov           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void	clamp_window_height(t_fdf *fdf, int colls_rows);
 int	main(int argc, char **argv)
 {
 	t_fdf *const	fdf = &(t_fdf){.xy_scale = FDF_INIT_SCALE,
-		.z_scale = FDF_INIT_SCALE, .zoom = FDF_INIT_ZOOM};
+		.z_scale = FDF_INIT_SCALE};
 
 	fdf->endianness = check_endianness();
 	if (argc != 2)
@@ -36,6 +36,7 @@ int	main(int argc, char **argv)
 		exit(cleanup(fdf) + 1);
 	}
 	calculate_zoom(fdf);
+	init_view(fdf);
 	setup_mlx(fdf);
 	mlx_loop(fdf->mlx);
 	return (EX_OK);
@@ -52,6 +53,10 @@ void	setup_mlx(t_fdf *fdf)
 		exit(cleanup(fdf) + 1);
 	mlx_expose_hook(fdf->root, (void *)expose_win, fdf);
 	mlx_mouse_hook(fdf->root, (void *)mouse_win, fdf);
+	mlx_hook(fdf->root, ButtonRelease, ButtonReleaseMask,
+		(void *)mouse_release_win, fdf);
+	mlx_hook(fdf->root, MotionNotify, PointerMotionMask,
+		(void *)mouse_move_win, fdf);
 	mlx_hook(fdf->root, DestroyNotify, 0, (void *)exit_win, fdf);
 	mlx_keypress_hook(fdf);
 }
@@ -89,7 +94,6 @@ void	calculate_zoom(t_fdf *const fdf)
 	fdf->win.height = fdf->max_height * 2 * fdf->xy_scale
 		+ (colls_rows * FDF_GRID_SCALE_FACTOR);
 	clamp_window_height(fdf, colls_rows);
-	fdf->zoom = fdf->xy_scale;
 }
 
 void	clamp_window_height(t_fdf *fdf, int colls_rows)

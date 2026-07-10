@@ -41,10 +41,14 @@ SRC_FS	 		:= cleanup.c \
  					data_convert.c \
  					draw_line_d.c \
  					hooks.c \
+					key_hooks.c \
  					load_data.c \
  					main.c \
+					mouse_hooks.c \
  					on_expose.c \
- 					rotate.c
+					projection.c \
+					rotate.c \
+					view.c
 SRCS	 		:= $(SRC_FS:%.c=$(SRC_DIR)/%.c)
 OBJS			= $(SRCS:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
 
@@ -54,7 +58,7 @@ all: $(NAME)
 
 bonus: all
 
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c $(SRC_DIR)/ft_fdf.h
 		@mkdir -p $(@D)
 		$(CC) $(CFLAGS) $(INCLUDE_FLAGS) -o $@ -c $<
 

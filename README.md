@@ -40,8 +40,15 @@ Current controls:
 
 - `ESC` or keypad `5`: close the window
 - Window close button: close the window
+- `1`: isometric projection
+- `2`: parallel projection
+- `3`: cabinet projection
+- `Space`: reset zoom, pan, rotation, and height factor
+- Keypad `+` / `-`: increase or decrease height exaggeration
 - Arrow keys: translate the model
-- Mouse wheel: zoom in and out
+- `Q`, `E`, `W`, `S`, `A`, `D`: rotate the model
+- Mouse wheel: zoom toward the mouse pointer
+- Middle mouse button drag: pan the model
 
 ## Resources
 
