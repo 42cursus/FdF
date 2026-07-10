@@ -71,14 +71,14 @@ t_point	get_point(t_fdf *fdf, t_map_row *row, int col, int crow)
 	t_point	t1;
 	t_point	t2;
 
-	div1 = 10;
-	div2 = 15;
+	div1 = FDF_ISO_X_DIVISOR;
+	div2 = FDF_ISO_Y_DIVISOR;
 	t1.x = col * fdf->xy_scale * fdf->zoom;
 	t1.y = crow * fdf->xy_scale * fdf->zoom;
 	t1.z = (int)(row->heights[col] * fdf->z_scale * fdf->zoom);
 	t2.x = (t1.x / div1 - t1.y / div1) + fdf->win.width / 2
 		+ fdf->draw_offset_x;
-	t2.y = fdf->win.height - fdf->win.height / 20
+	t2.y = fdf->win.height - fdf->win.height / FDF_HEIGHT_MARGIN_DIVISOR
 		- (t1.z + t1.x / div2 + t1.y / div2) + fdf->draw_offset_y;
 	t2.z = t1.z;
 	t2.col = row->colours[col];

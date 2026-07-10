@@ -21,21 +21,21 @@ int	mouse_win(int button, int x, int y, void *p)
 	t_fdf *const	app = p;
 
 	((void)x, (void)y);
-	if (button == 5 || button == 4)
+	if (button == FDF_SCROLL_DOWN || button == FDF_SCROLL_UP)
 	{
-		if (button == 5)
+		if (button == FDF_SCROLL_DOWN)
 		{
-			step = app->zoom - (app->zoom / 10);
-			if (step < 0.1)
+			step = app->zoom - (app->zoom / FDF_PERCENT_DIVISOR);
+			if (step < FDF_ZOOM_MIN)
 				return (EX_OK);
 			app->zoom = step;
 		}
-		if (button == 4)
+		if (button == FDF_SCROLL_UP)
 		{
-			step = app->zoom + (app->zoom / 10);
-			if (step > 70)
+			step = app->zoom + (app->zoom / FDF_PERCENT_DIVISOR);
+			if (step > FDF_ZOOM_MAX)
 				return (EX_OK);
-			app->zoom += (app->zoom / 10);
+			app->zoom = step;
 		}
 		replace_image(app);
 		on_expose(app);
@@ -47,7 +47,7 @@ int	key_win(int key, t_fdf *fdf)
 {
 	int				step;
 
-	step = 25;
+	step = FDF_PAN_STEP;
 	if (key == XK_KP_5 || key == XK_Escape)
 		exit_win(fdf);
 	if (key == XK_Right)
@@ -69,10 +69,7 @@ void	replace_image(t_fdf *fdf)
 
 	im3 = mlx_new_image(fdf->mlx, fdf->win.width, fdf->win.height);
 	if (!im3)
-	{
-		ft_printf(" !! KO !!\n");
-		exit(1);
-	}
+		exit(cleanup(fdf) + 1);
 	mlx_destroy_image(fdf->mlx, fdf->canvas);
 	fdf->canvas = im3;
 	mlx_put_image_to_window(fdf->mlx, fdf->root,
@@ -95,10 +92,7 @@ int	expose_win(t_fdf *fdf)
 
 	cnvs = mlx_new_image(fdf->mlx, fdf->win.width, fdf->win.height);
 	if (!cnvs)
-	{
-		ft_printf(" !! KO !!\n");
-		exit(1);
-	}
+		exit(cleanup(fdf) + 1);
 	fdf->canvas = cnvs;
 	on_expose(fdf);
 	return (EX_OK);

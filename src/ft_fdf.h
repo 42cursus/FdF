@@ -21,6 +21,25 @@
 # include "mlx/mlx.h"
 
 # define WHITE_COLOR 0xffffff
+# define FDF_INIT_SCALE 20
+# define FDF_INIT_ZOOM 1.5
+# define FDF_WIN_MAX_WIDTH 1024
+# define FDF_WIN_MAX_HEIGHT 768
+# define FDF_WIN_WIDTH_FACTOR 280
+# define FDF_PERCENT_DIVISOR 10
+# define FDF_FIT_SCALE_NUMERATOR 10000
+# define FDF_GRID_SCALE_FACTOR 7
+# define FDF_HEIGHT_MARGIN_DIVISOR 20
+# define FDF_ISO_X_DIVISOR 10
+# define FDF_ISO_Y_DIVISOR 15
+# define FDF_PAN_STEP 25
+# define FDF_ZOOM_MIN 0.1
+# define FDF_ZOOM_MAX 70
+# define FDF_SCROLL_UP 4
+# define FDF_SCROLL_DOWN 5
+# define FDF_RGB_RED_SHIFT 16
+# define FDF_RGB_GREEN_SHIFT 8
+# define FDF_RGB_MODULO 256
 
 typedef struct s_fdf_colour
 {
@@ -96,6 +115,7 @@ void	on_expose(t_fdf *fdf);
 void	mlx_keypress_hook(t_fdf *const fdf);
 int		key_win(int key, t_fdf *fdf);
 int		mouse_win(int button, int x, int y, void *p);
+int		cleanup(const t_fdf *fdf);
 int		exit_win(const t_fdf *fdf);
 int		expose_win(t_fdf *fdf);
 int		check_endianness(void);

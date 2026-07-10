@@ -13,6 +13,7 @@
 #include "ft_fdf.h"
 
 void	read_lines_from_file(t_fdf *fdf);
+void	push_line(t_fdf *fdf, int fd, char *line);
 
 void	load_data(t_fdf *fdf)
 {
@@ -29,6 +30,8 @@ void	load_data(t_fdf *fdf)
 		fdf->map = next;
 	}
 	fdf->map = row;
+	if (!fdf->map || !fdf->map->word_tab)
+		return ;
 	fdf->cols = (int)ft_get_tab_size((void **) fdf->map->word_tab);
 	fdf->rows = 0;
 	fdf->max_height = 0;
@@ -45,8 +48,6 @@ void	read_lines_from_file(t_fdf *fdf)
 {
 	int			fd;
 	char		*line;
-	t_map_row	*row;
-	char		**w_tab;
 
 	fd = open(fdf->filename, 0);
 	if (fd == -1)
@@ -57,15 +58,34 @@ void	read_lines_from_file(t_fdf *fdf)
 	line = get_next_line(fd);
 	while (line)
 	{
-		row = (t_map_row *) malloc(sizeof(t_map_row));
-		row->line = line;
-		w_tab = ft_split(row->line, ' ');
-		row->word_tab = w_tab;
-		row->next = fdf->map;
-		fdf->map = row;
-		free(line);
-		row->line = NULL;
+		push_line(fdf, fd, line);
 		line = get_next_line(fd);
 	}
 	close(fd);
+}
+
+void	push_line(t_fdf *fdf, int fd, char *line)
+{
+	t_map_row	*row;
+
+	row = (t_map_row *)malloc(sizeof(t_map_row));
+	if (!row)
+	{
+		free(line);
+		close(fd);
+		exit(cleanup(fdf) + 1);
+	}
+	row->line = NULL;
+	row->heights = NULL;
+	row->colours = NULL;
+	row->word_tab = ft_split(line, ' ');
+	free(line);
+	if (!row->word_tab)
+	{
+		free(row);
+		close(fd);
+		exit(cleanup(fdf) + 1);
+	}
+	row->next = fdf->map;
+	fdf->map = row;
 }
