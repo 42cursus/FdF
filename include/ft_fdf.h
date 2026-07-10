@@ -171,7 +171,6 @@ typedef struct s_fdf_struct
 	double		max_height;
 	char		*filename;
 	int			custom_colour_flag;
-	int			endianness;
 	t_view		view;
 	t_img		*canvas;
 }	t_fdf;
@@ -187,7 +186,6 @@ int		mouse_move_win(int x, int y, void *p);
 int		cleanup(const t_fdf *fdf);
 int		exit_win(const t_fdf *fdf);
 int		expose_win(t_fdf *fdf);
-int		check_endianness(void);
 void	calculate_zoom(t_fdf *const fdf);
 void	init_view(t_fdf *fdf);
 void	refresh_image(t_fdf *fdf);
@@ -201,5 +199,4 @@ void	rotate_y(t_dpoint *point, double angle);
 void	rotate_z(t_dpoint *point, double angle);
 void	replace_image(t_fdf *fdf);
 void	draw_line_d(t_fdf *fdf, t_point p1, t_point p2);
-int		fdf_lerp_color(int col1, int col2, int step, int steps);
 #endif //FT_FDF_H

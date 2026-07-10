@@ -17,6 +17,12 @@ void	rotate_x(t_dpoint *point, double angle);
 void	rotate_z(t_dpoint *point, double angle);
 void	rotate_y(t_dpoint *point, double angle);
 
+/**
+ * Rotates a model point around the X axis.
+ *
+ * @param point Point updated in place.
+ * @param angle Rotation angle in radians.
+ */
 void	rotate_x(t_dpoint *point, double angle)
 {
 	double	y;
@@ -28,6 +34,12 @@ void	rotate_x(t_dpoint *point, double angle)
 	point->z = y * sin(angle) + z * cos(angle);
 }
 
+/**
+ * Rotates a model point around the Z axis.
+ *
+ * @param point Point updated in place.
+ * @param angle Rotation angle in radians.
+ */
 void	rotate_z(t_dpoint *point, double angle)
 {
 	double	x;
@@ -39,6 +51,12 @@ void	rotate_z(t_dpoint *point, double angle)
 	point->y = x * sin(angle) + y * cos(angle);
 }
 
+/**
+ * Rotates a model point around the Y axis.
+ *
+ * @param point Point updated in place.
+ * @param angle Rotation angle in radians.
+ */
 void	rotate_y(t_dpoint *point, double angle)
 {
 	double	x;
