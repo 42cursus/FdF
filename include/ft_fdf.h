@@ -26,7 +26,6 @@ typedef struct s_win_list	t_win_list;
 
 # define WHITE_COLOR 0xffffff
 # define FDF_INIT_SCALE 20
-# define FDF_INIT_ZOOM 1.5
 # define FDF_WIN_MAX_WIDTH 1024
 # define FDF_WIN_MAX_HEIGHT 768
 # define FDF_WIN_WIDTH_FACTOR 280
