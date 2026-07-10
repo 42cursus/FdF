@@ -21,7 +21,6 @@ int	main(int argc, char **argv)
 	t_fdf *const	fdf = &(t_fdf){.xy_scale = FDF_INIT_SCALE,
 		.z_scale = FDF_INIT_SCALE};
 
-	fdf->endianness = check_endianness();
 	if (argc != 2)
 	{
 		ft_printf("Usage: %s <map.fdf>\n", argv[0]);
@@ -31,7 +30,7 @@ int	main(int argc, char **argv)
 	load_data(fdf);
 	if (!fdf->cols || !fdf->rows)
 	{
-		printf("No data found.\n");
+		ft_printf("No data found.\n");
 		exit(cleanup(fdf) + 1);
 	}
 	calculate_zoom(fdf);

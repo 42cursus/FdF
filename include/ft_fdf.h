@@ -171,7 +171,6 @@ typedef struct s_fdf_struct
 	double		max_height;
 	char		*filename;
 	int			custom_colour_flag;
-	int			endianness;
 	t_view		view;
 	t_img		*canvas;
 }	t_fdf;
@@ -187,7 +186,6 @@ int		mouse_move_win(int x, int y, void *p);
 int		cleanup(const t_fdf *fdf);
 int		exit_win(const t_fdf *fdf);
 int		expose_win(t_fdf *fdf);
-int		check_endianness(void);
 void	calculate_zoom(t_fdf *const fdf);
 void	init_view(t_fdf *fdf);
 void	refresh_image(t_fdf *fdf);

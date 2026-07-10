@@ -12,6 +12,11 @@
 
 #include "ft_fdf.h"
 
+/**
+ * Sets the initial projection, camera, and mouse state.
+ *
+ * @param fdf Application state to initialise.
+ */
 void	init_view(t_fdf *fdf)
 {
 	fdf->view.projection = FDF_PROJ_ISO;
@@ -29,6 +34,13 @@ void	init_view(t_fdf *fdf)
 	fdf->view.mouse_y = fdf->win.height / 2;
 }
 
+/**
+ * Moves the view in screen space.
+ *
+ * @param fdf Application state with active view settings.
+ * @param dx Horizontal pan delta in pixels.
+ * @param dy Vertical pan delta in pixels.
+ */
 void	fdf_pan(t_fdf *fdf, double dx, double dy)
 {
 	fdf->view.pan_x += dx;
@@ -36,6 +48,11 @@ void	fdf_pan(t_fdf *fdf, double dx, double dy)
 	fdf->view.dirty = 1;
 }
 
+/**
+ * Restores the default projection, camera, and mouse state.
+ *
+ * @param fdf Application state to reset.
+ */
 void	fdf_reset_view(t_fdf *fdf)
 {
 	fdf->view.zoom = fdf->xy_scale;
@@ -52,6 +69,12 @@ void	fdf_reset_view(t_fdf *fdf)
 	fdf->view.dirty = 1;
 }
 
+/**
+ * Changes the vertical exaggeration factor within limits.
+ *
+ * @param fdf Application state with active view settings.
+ * @param delta Amount to add to the current Z factor.
+ */
 void	fdf_adjust_z_factor(t_fdf *fdf, double delta)
 {
 	double	next_factor;
@@ -63,6 +86,14 @@ void	fdf_adjust_z_factor(t_fdf *fdf, double delta)
 	fdf->view.dirty = 1;
 }
 
+/**
+ * Zooms while keeping the selected screen point anchored.
+ *
+ * @param fdf Application state with active view settings.
+ * @param next_zoom New zoom value.
+ * @param x Anchor X coordinate in window space.
+ * @param y Anchor Y coordinate in window space.
+ */
 void	fdf_zoom_at(t_fdf *fdf, double next_zoom, int x, int y)
 {
 	double	ratio;

@@ -11,7 +11,16 @@
 /* ************************************************************************** */
 
 #include "ft_fdf.h"
+#include <sys/param.h>
 
+/**
+ * Checks whether a line is fully outside one canvas edge.
+ *
+ * @param img Canvas image used for bounds.
+ * @param p1 First projected endpoint.
+ * @param p2 Second projected endpoint.
+ * @return Non-zero when the line can be skipped.
+ */
 static inline __attribute__((always_inline, used))
 int	fdf_line_outside(t_img *img, t_point p1, t_point p2)
 {
@@ -24,6 +33,12 @@ int	fdf_line_outside(t_img *img, t_point p1, t_point p2)
 	return (outside);
 }
 
+/**
+ * Writes a projected point into the canvas when it is visible.
+ *
+ * @param fdf Application state with the active canvas.
+ * @param p Point carrying screen coordinates and colour.
+ */
 static inline __attribute__((always_inline, used))
 void	fdf_draw_pixel(t_fdf *fdf, t_point p)
 {
@@ -37,6 +52,15 @@ void	fdf_draw_pixel(t_fdf *fdf, t_point p)
 			+ (p.x * (img->bpp / 8))) = p.col;
 }
 
+/**
+ * Interpolates an RGB colour at a line step.
+ *
+ * @param col1 Start colour in 0xRRGGBB format.
+ * @param col2 End colour in 0xRRGGBB format.
+ * @param step Current Bresenham step.
+ * @param steps Total Bresenham steps.
+ * @return Interpolated colour in 0xRRGGBB format.
+ */
 static inline __attribute__((always_inline, used))
 int	fdf_lerp_color(int col1, int col2, int step, int steps)
 {
@@ -56,6 +80,12 @@ int	fdf_lerp_color(int col1, int col2, int step, int steps)
 	return ((c.r << FDF_RGB_RED_SHIFT) | (c.g << FDF_RGB_GREEN_SHIFT) | c.b);
 }
 
+/**
+ * Advances one Bresenham iteration.
+ *
+ * @param p Current point, updated in place.
+ * @param line Bresenham state, updated in place.
+ */
 static inline __attribute__((always_inline, used))
 void	fdf_advance_bres(t_point *p, t_bres *line)
 {
@@ -71,30 +101,35 @@ void	fdf_advance_bres(t_point *p, t_bres *line)
 	p->y += line->sy & move_y;
 }
 
+/**
+ * Draw a colour-interpolated line between two projected points.
+ *
+ * @param fdf Application state with the active canvas.
+ * @param p1 First projected endpoint.
+ * @param p2 Second projected endpoint.
+ */
 void	draw_line_d(t_fdf *fdf, t_point p1, t_point p2)
 {
 	t_bres	line;
-	int		col1;
-	int		col2;
+	t_point	pixel;
 	int		step;
 
 	if (fdf_line_outside(fdf->canvas, p1, p2))
 		return ;
-	line.dx = abs(p2.x - p1.x);
-	line.dy = abs(p2.y - p1.y);
+	line.dx = MAX(p1.x, p2.x) - MIN(p1.x, p2.x);
+	line.dy = MAX(p1.y, p2.y) - MIN(p1.y, p2.y);
 	line.sx = 1 - ((p1.x > p2.x) << 1);
 	line.sy = 1 - ((p1.y > p2.y) << 1);
 	line.err = line.dx - line.dy;
 	line.steps = line.dx ^ ((line.dx ^ line.dy) & -(line.dx < line.dy));
 	if (line.steps == 0)
 		return (fdf_draw_pixel(fdf, p1));
-	col1 = p1.col;
-	col2 = p2.col;
 	step = -1;
 	while (++step <= line.steps)
 	{
-		p1.col = fdf_lerp_color(col1, col2, step, line.steps);
-		fdf_draw_pixel(fdf, p1);
+		pixel = p1;
+		pixel.col = fdf_lerp_color(p1.col, p2.col, step, line.steps);
+		fdf_draw_pixel(fdf, pixel);
 		fdf_advance_bres(&p1, &line);
 	}
 }

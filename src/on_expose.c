@@ -12,7 +12,9 @@
 
 #include "ft_fdf.h"
 
-t_rect	get_rect(t_fdf *fdf, t_map_row *row, int cr, int cc);
+static void	draw_row_edges(t_fdf *fdf, t_map_row *row, int crow);
+static void	draw_column_edges(t_fdf *fdf, t_map_row *row, int crow);
+static void	draw_colour_diagonals(t_fdf *fdf, t_map_row *row, int crow);
 
 /**
  * The XSync function flushes the output buffer and then waits until
@@ -27,39 +29,59 @@ t_rect	get_rect(t_fdf *fdf, t_map_row *row, int cr, int cc);
 void	on_expose(t_fdf *fdf)
 {
 	t_map_row	*row;
-	t_rect		rect;
 	int			cr;
-	int			cc;
 
 	row = fdf->map;
-	cr = fdf->rows;
-	while (--cr)
+	cr = fdf->rows - 1;
+	while (row)
 	{
-		cc = fdf->cols;
-		while (--cc)
-		{
-			rect = get_rect(fdf, row, cr, cc);
-			draw_line_d(fdf, rect.t1, rect.t2);
-			draw_line_d(fdf, rect.t1, rect.t3);
-			if (cr == 1)
-				draw_line_d(fdf, rect.t3, rect.t4);
-			if (fdf->custom_colour_flag)
-				draw_line_d(fdf, rect.t1, rect.t4);
-		}
-		draw_line_d(fdf, rect.t2, rect.t4);
+		draw_row_edges(fdf, row, cr);
+		draw_column_edges(fdf, row, cr);
+		if (fdf->custom_colour_flag)
+			draw_colour_diagonals(fdf, row, cr);
 		row = row->next;
+		cr--;
 	}
 	mlx_put_image_to_window(fdf->mlx, fdf->root,
 		fdf->canvas, fdf->offset.x, fdf->offset.y);
 }
 
-t_rect	get_rect(t_fdf *fdf, t_map_row *row, int cr, int cc)
+static void	draw_row_edges(t_fdf *fdf, t_map_row *row, int crow)
 {
-	t_rect	rect;
+	t_point	left;
+	t_point	right;
+	int		cc;
 
-	rect.t1 = get_point(fdf, row, cc, cr);
-	rect.t2 = get_point(fdf, row, cc - 1, cr);
-	rect.t3 = get_point(fdf, row->next, cc, cr - 1);
-	rect.t4 = get_point(fdf, row->next, cc - 1, cr - 1);
-	return (rect);
+	cc = fdf->cols - 1;
+	right = get_point(fdf, row, cc, crow);
+	while (cc-- > 0)
+	{
+		left = get_point(fdf, row, cc, crow);
+		draw_line_d(fdf, right, left);
+		right = left;
+	}
+}
+
+static void	draw_column_edges(t_fdf *fdf, t_map_row *row, int crow)
+{
+	int	cc;
+
+	if (!row->next)
+		return ;
+	cc = fdf->cols;
+	while (cc-- > 0)
+		draw_line_d(fdf, get_point(fdf, row, cc, crow),
+			get_point(fdf, row->next, cc, crow - 1));
+}
+
+static void	draw_colour_diagonals(t_fdf *fdf, t_map_row *row, int crow)
+{
+	int	cc;
+
+	if (!row->next)
+		return ;
+	cc = fdf->cols;
+	while (--cc > 0)
+		draw_line_d(fdf, get_point(fdf, row, cc, crow),
+			get_point(fdf, row->next, cc - 1, crow - 1));
 }

@@ -12,6 +12,13 @@
 
 #include "ft_fdf.h"
 
+/**
+ * Projects a transformed model point with the isometric camera.
+ *
+ * @param fdf Application state with window and view data.
+ * @param transform Rotated model point and screen scale.
+ * @return Screen point ready for line drawing.
+ */
 t_point	project_iso(t_fdf *fdf, t_transform transform)
 {
 	t_point	out;
@@ -29,6 +36,13 @@ t_point	project_iso(t_fdf *fdf, t_transform transform)
 	return (out);
 }
 
+/**
+ * Projects a transformed model point with the parallel camera.
+ *
+ * @param fdf Application state with window and view data.
+ * @param transform Rotated model point and screen scale.
+ * @return Screen point ready for line drawing.
+ */
 t_point	project_parallel(t_fdf *fdf, t_transform transform)
 {
 	t_point	out;
@@ -45,6 +59,13 @@ t_point	project_parallel(t_fdf *fdf, t_transform transform)
 	return (out);
 }
 
+/**
+ * Projects a transformed model point with the cabinet camera.
+ *
+ * @param fdf Application state with window and view data.
+ * @param transform Rotated model point and screen scale.
+ * @return Screen point ready for line drawing.
+ */
 t_point	project_cabinet(t_fdf *fdf, t_transform transform)
 {
 	t_point	out;
@@ -61,6 +82,15 @@ t_point	project_cabinet(t_fdf *fdf, t_transform transform)
 	return (out);
 }
 
+/**
+ * Converts one map cell into centered model space.
+ *
+ * @param fdf Application state with map scale data.
+ * @param row Map row containing height and colour arrays.
+ * @param col Column index in the row.
+ * @param crow Centered row index used by the renderer.
+ * @return Model-space point with its draw scale.
+ */
 static t_transform	model_point(t_fdf *fdf, t_map_row *row, int col, int crow)
 {
 	t_transform	transform;
@@ -74,6 +104,15 @@ static t_transform	model_point(t_fdf *fdf, t_map_row *row, int col, int crow)
 	return (transform);
 }
 
+/**
+ * Builds, rotates, and projects one map point.
+ *
+ * @param fdf Application state with active view settings.
+ * @param row Map row containing the source point.
+ * @param col Column index in the row.
+ * @param crow Centered row index used by the renderer.
+ * @return Projected screen point.
+ */
 t_point	get_point(t_fdf *fdf, t_map_row *row, int col, int crow)
 {
 	t_transform	transform;
