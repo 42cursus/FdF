@@ -13,7 +13,6 @@
 #include <sysexits.h>
 #include "ft_fdf.h"
 
-void	mlx_keypress_hook(t_fdf *const fdf);
 void	setup_mlx(t_fdf *fdf);
 void	clamp_window_height(t_fdf *fdf, int colls_rows);
 
@@ -58,14 +57,7 @@ void	setup_mlx(t_fdf *fdf)
 	mlx_hook(fdf->root, MotionNotify, PointerMotionMask,
 		(void *)mouse_move_win, fdf);
 	mlx_hook(fdf->root, DestroyNotify, 0, (void *)exit_win, fdf);
-	mlx_keypress_hook(fdf);
-}
-
-void	mlx_keypress_hook(t_fdf *const fdf)
-{
-	fdf->root->hooks[KeyRelease].hook = key_win;
-	fdf->root->hooks[KeyRelease].param = fdf;
-	fdf->root->hooks[KeyRelease].mask = KeyReleaseMask | KeyPressMask;
+	mlx_hook(fdf->root, KeyPress, KeyPressMask, (void *) &key_win, fdf);
 }
 
 void	calculate_zoom(t_fdf *const fdf)

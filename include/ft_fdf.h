@@ -16,8 +16,7 @@
 # include <stdbool.h>
 # include <stdio.h>
 # include "libft.h"
-# include "mlx.h"
-# include <mlx_int.h>
+# include <mlx.h>
 
 # define WHITE_COLOR 0xffffff
 # define FDF_INIT_SCALE 20
@@ -152,7 +151,7 @@ typedef struct s_fdf_struct
 void	load_data(t_fdf *fdf);
 void	data_convert(t_fdf *fdf, t_map_row *row);
 void	on_expose(t_fdf *fdf);
-void	mlx_keypress_hook(t_fdf *const fdf);
+
 int		key_win(int key, t_fdf *fdf);
 int		mouse_win(int button, int x, int y, void *p);
 int		mouse_release_win(int button, int x, int y, void *p);
