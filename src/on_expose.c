@@ -12,9 +12,9 @@
 
 #include "ft_fdf.h"
 
-void	draw_row_edges(t_fdf *fdf, t_map_row *row, int crow);
-void	draw_column_edges(t_fdf *fdf, t_map_row *row, int crow);
-void	draw_colour_diagonals(t_fdf *fdf, t_map_row *row, int crow);
+static void	draw_row_edges(t_fdf *fdf, t_map_row *row, int crow);
+static void	draw_column_edges(t_fdf *fdf, t_map_row *row, int crow);
+static void	draw_colour_diagonals(t_fdf *fdf, t_map_row *row, int crow);
 
 /**
  * The XSync function flushes the output buffer and then waits until
@@ -46,17 +46,23 @@ void	on_expose(t_fdf *fdf)
 		fdf->canvas, fdf->offset.x, fdf->offset.y);
 }
 
-void	draw_row_edges(t_fdf *fdf, t_map_row *row, int crow)
+static void	draw_row_edges(t_fdf *fdf, t_map_row *row, int crow)
 {
-	int	cc;
+	t_point	left;
+	t_point	right;
+	int		cc;
 
-	cc = fdf->cols;
-	while (--cc > 0)
-		draw_line_d(fdf, get_point(fdf, row, cc, crow),
-			get_point(fdf, row, cc - 1, crow));
+	cc = fdf->cols - 1;
+	right = get_point(fdf, row, cc, crow);
+	while (cc-- > 0)
+	{
+		left = get_point(fdf, row, cc, crow);
+		draw_line_d(fdf, right, left);
+		right = left;
+	}
 }
 
-void	draw_column_edges(t_fdf *fdf, t_map_row *row, int crow)
+static void	draw_column_edges(t_fdf *fdf, t_map_row *row, int crow)
 {
 	int	cc;
 
@@ -68,7 +74,7 @@ void	draw_column_edges(t_fdf *fdf, t_map_row *row, int crow)
 			get_point(fdf, row->next, cc, crow - 1));
 }
 
-void	draw_colour_diagonals(t_fdf *fdf, t_map_row *row, int crow)
+static void	draw_colour_diagonals(t_fdf *fdf, t_map_row *row, int crow)
 {
 	int	cc;
 
