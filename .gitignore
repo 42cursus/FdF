@@ -12,9 +12,11 @@
 
 FdF
 fdf
-resources/
+resources/*
 !/resources/maps.zip
 !/resources/program_screenshot.png
+!/resources/demo_maps/
+!/resources/demo_maps/*.fdf
 gdb.txt
 scratch/
 
