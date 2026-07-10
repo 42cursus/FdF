@@ -201,4 +201,5 @@ void	rotate_y(t_dpoint *point, double angle);
 void	rotate_z(t_dpoint *point, double angle);
 void	replace_image(t_fdf *fdf);
 void	draw_line_d(t_fdf *fdf, t_point p1, t_point p2);
+int		fdf_lerp_color(int col1, int col2, int step, int steps);
 #endif //FT_FDF_H

@@ -38,22 +38,14 @@ void	fdf_draw_pixel(t_fdf *fdf, t_point p)
 }
 
 static inline __attribute__((always_inline, used))
-int	fdf_lerp_color(int col1, int col2, int step, int steps)
+int	fdf_absdiff(int a, int b)
 {
-	t_rgb	c;
-	t_rgb	c1;
-	t_rgb	c2;
+	int	diff;
 
-	c1.r = (col1 >> FDF_RGB_RED_SHIFT) % FDF_RGB_MODULO;
-	c1.g = (col1 >> FDF_RGB_GREEN_SHIFT) % FDF_RGB_MODULO;
-	c1.b = col1 % FDF_RGB_MODULO;
-	c2.r = (col2 >> FDF_RGB_RED_SHIFT) % FDF_RGB_MODULO;
-	c2.g = (col2 >> FDF_RGB_GREEN_SHIFT) % FDF_RGB_MODULO;
-	c2.b = col2 % FDF_RGB_MODULO;
-	c.r = c1.r + ((long)step * (c2.r - c1.r)) / steps;
-	c.g = c1.g + ((long)step * (c2.g - c1.g)) / steps;
-	c.b = c1.b + ((long)step * (c2.b - c1.b)) / steps;
-	return ((c.r << FDF_RGB_RED_SHIFT) | (c.g << FDF_RGB_GREEN_SHIFT) | c.b);
+	diff = a - b;
+	if (diff < 0)
+		diff = -diff;
+	return (diff);
 }
 
 static inline __attribute__((always_inline, used))
@@ -80,8 +72,8 @@ void	draw_line_d(t_fdf *fdf, t_point p1, t_point p2)
 
 	if (fdf_line_outside(fdf->canvas, p1, p2))
 		return ;
-	line.dx = abs(p2.x - p1.x);
-	line.dy = abs(p2.y - p1.y);
+	line.dx = fdf_absdiff(p1.x, p2.x);
+	line.dy = fdf_absdiff(p1.y, p2.y);
 	line.sx = 1 - ((p1.x > p2.x) << 1);
 	line.sy = 1 - ((p1.y > p2.y) << 1);
 	line.err = line.dx - line.dy;

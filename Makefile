@@ -41,6 +41,7 @@ OBJ_DIR			= $(BUILD_DIR)/obj
 SRC_FS	 		:= cleanup.c \
  					check_endianness.c \
  					data_convert.c \
+					draw_colour.c \
  					draw_line_d.c \
  					hooks.c \
 					key_hooks.c \

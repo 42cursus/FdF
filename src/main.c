@@ -31,7 +31,7 @@ int	main(int argc, char **argv)
 	load_data(fdf);
 	if (!fdf->cols || !fdf->rows)
 	{
-		printf("No data found.\n");
+		ft_printf("No data found.\n");
 		exit(cleanup(fdf) + 1);
 	}
 	calculate_zoom(fdf);
