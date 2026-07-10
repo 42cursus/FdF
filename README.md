@@ -1,12 +1,55 @@
+*This project has been created as part of the 42 curriculum by abelov.*
+
 # FdF
-## A project about making a wireframe and projection rendering.
 
-This project is about creating a simple wireframe model representation of a 3D
-landscape by linking various points (x, y, z) with line segments (edges).
+## Description
 
-### Objectives:
+FdF renders a wireframe model of a landscape from a `.fdf` height map. Each value in
+the map represents a point altitude, and neighbouring points are connected with line
+segments in an isometric projection.
 
-To get familiar with the [MiniLibX](https://github.com/42Paris/minilibx-linux) library and discover the basics of graphics programming.
+The project uses MiniLibX for window creation, image buffers, and keyboard/mouse
+events. Line rasterization is implemented in the project with a Bresenham-style
+renderer that writes into an MLX image before blitting it to the window.
 
+## Instructions
 
-![Screenshot of a working programm](/resources/program_screenshot.png)
+Build the mandatory program:
+
+```sh
+make
+```
+
+Run it with a map:
+
+```sh
+./fdf resources/demo_maps/height.fdf
+```
+
+Other useful commands:
+
+```sh
+make bonus
+make test
+make clean
+make fclean
+make re
+```
+
+Current controls:
+
+- `ESC` or keypad `5`: close the window
+- Window close button: close the window
+- Arrow keys: translate the model
+- Mouse wheel: zoom in and out
+
+## Resources
+
+- 42 FdF subject v5.0
+- MiniLibX documentation and sources
+- X11 documentation for expose events and image formats
+- Bresenham line algorithm references for integer line rasterization
+
+AI was used as a review and planning aid: drafting staged refactor plans,
+and checking implementation risks.
+All code changes are reviewed and owned by the project author.

@@ -48,9 +48,11 @@ SRC_FS	 		:= cleanup.c \
 SRCS	 		:= $(SRC_FS:%.c=$(SRC_DIR)/%.c)
 OBJS			= $(SRCS:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
 
-.PHONY: all clean test re
+.PHONY: all bonus clean fclean norm re test
 
-all: $(NAME) test
+all: $(NAME)
+
+bonus: all
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 		@mkdir -p $(@D)
@@ -78,10 +80,9 @@ clean:
 		@$(RM) -fr $(OBJ_DIR)
 		@$(MAKE) -C $(LIBFT_PATH) clean
 		@$(MAKE) -C $(LIBX_PATH) clean
-		@$(MAKE) -C $(LIBX_PATH) clean
 
 fclean: clean
-		@$(RM) -fr fdf $(BUILD_DIR) a.out
+		@$(RM) -fr $(NAME) FdF $(BUILD_DIR) a.out
 
 re: fclean all
 

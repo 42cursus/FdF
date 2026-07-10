@@ -4,9 +4,10 @@
 
 ### Primary Makefile workflow
 - Build the app without launching sample maps: `make fdf`
-- Full default build plus GUI smoke tests: `make`
+- Default build without launching sample maps: `make`
 - Run the bundled smoke-test maps: `make test`
-- Run one map manually: `./fdf resources/test_maps/t1.fdf`
+- Run one demo map manually: `./fdf resources/demo_maps/height.fdf`
+- Run one bundled test map manually: `./fdf resources/test_maps/t1.fdf`
 - Clean build outputs: `make clean` or `make fclean`
 - Run the 42 style checker: `make norm`
 
@@ -29,7 +30,7 @@
 
 ## Key conventions
 
-- The compile-only target is `make fdf`. The default `make` target also runs `make test`, which opens sample maps.
+- The default `make` target builds only `fdf`; use `make test` when you intentionally want to open sample maps.
 - The Makefile produces a lowercase `./fdf` binary, while the CMake build is configured to output `./FdF`.
 - Treat the codebase as an iterative refinement of an already-submitted FdF project. Prefer targeted, behavior-aware improvements over broad rewrites unless the task explicitly calls for a redesign.
 - `src/ft_fdf.h` is the central application header and owns the FdF drawing types (`t_point`, `t_rect`, `t_rgb`, `t_bres`) as well as the full `t_fdf` state definition.
