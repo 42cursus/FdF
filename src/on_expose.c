@@ -10,7 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "fdf/fdf_lib.h"
 #include "ft_fdf.h"
 
 t_rect	get_rect(t_fdf *fdf, t_map_row *row, int cr, int cc);

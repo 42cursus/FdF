@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <fdf/fdf_lib.h>
+#include "ft_fdf.h"
 #include <math.h>
 
 void	rotate_x(t_point *point, double angle);

@@ -24,12 +24,10 @@ LIBFT_PATH		=  ./lib/ft
 LIBFT			=  $(LIBFT_PATH)/libft.a
 LIBX_PATH		=  ./lib/mlx
 LIBX			=  $(LIBX_PATH)/libmlx.a
-LIBFDF_PATH		=  ./lib/fdf
-LIBFDF			=  $(LIBFDF_PATH)/libfdf.a
-LIBS			:= $(LIBX) $(LIBFT) $(LIBFDF)
+LIBS			:= $(LIBX) $(LIBFT)
 
-LINK_FLAGS		:= -L $(LIBFT_PATH) -L $(LIBX_PATH)  -L $(LIBFDF_PATH) \
-					-lfdf -lmlx -lft -lX11 -lXext -lm
+LINK_FLAGS		:= -L $(LIBFT_PATH) -L $(LIBX_PATH) \
+					-lmlx -lft -lX11 -lXext -lm
 
 CTAGS			:= ctags
 RM				:= /bin/rm
@@ -39,7 +37,9 @@ SRC_DIR			= src
 OBJ_DIR			= $(BUILD_DIR)/obj
 
 SRC_FS	 		:= cleanup.c \
+ 					check_endianness.c \
  					data_convert.c \
+ 					draw_line_d.c \
  					hooks.c \
  					load_data.c \
  					main.c \
@@ -61,9 +61,6 @@ $(LIBFT):
 
 $(LIBX):
 		@$(MAKE) -C $(LIBX_PATH)
-
-$(LIBFDF):
-		@$(MAKE) -C $(LIBFDF_PATH) -j8
 
 $(NAME): $(LIBS) $(OBJS)
 		$(CC) $(CFLAGS) $(INCLUDE_FLAGS) -o $@ $^  $(LINK_FLAGS)
@@ -91,4 +88,3 @@ re: fclean all
 norm:
 		@norminette $(SRCS) --use-gitignore
 		@$(MAKE) -C $(LIBFT_PATH) norm
-		@$(MAKE) -C $(LIBFDF_PATH) norm

@@ -15,14 +15,45 @@
 # include <stdlib.h>
 # include <stdbool.h>
 # include <stdio.h>
-# include <fdf/fdf_lib.h>
 # include <mlx_int.h>
 # include "ft/gnl.h"
 # include "ft/libft.h"
 # include "mlx/mlx.h"
-# include "fdf/util.h"
 
 # define WHITE_COLOR 0xffffff
+
+typedef struct s_fdf_colour
+{
+	int	r;
+	int	g;
+	int	b;
+}	t_rgb;
+
+typedef struct s_fdf_point
+{
+	int	x;
+	int	y;
+	int	z;
+	int	col;
+}	t_point;
+
+typedef struct s_rect
+{
+	t_point	t1;
+	t_point	t2;
+	t_point	t3;
+	t_point	t4;
+}	t_rect;
+
+typedef struct s_bres
+{
+	int	dx;
+	int	dy;
+	int	sx;
+	int	sy;
+	int	err;
+	int	steps;
+}	t_bres;
 
 typedef struct s_map_row	t_map_row;
 struct s_map_row
@@ -67,7 +98,9 @@ int		key_win(int key, t_fdf *fdf);
 int		mouse_win(int button, int x, int y, void *p);
 int		exit_win(const t_fdf *fdf);
 int		expose_win(t_fdf *fdf);
+int		check_endianness(void);
 void	calculate_zoom(t_fdf *const fdf);
 t_point	get_point(t_fdf *fdf, t_map_row *row, int col, int crow);
 void	replace_image(t_fdf *fdf);
+void	draw_line_d(t_fdf *fdf, t_point p1, t_point p2);
 #endif //FT_FDF_H

@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include <sysexits.h>
-#include <fdf/fdf_lib.h>
 #include "ft_fdf.h"
 
 void	mlx_keypress_hook(t_fdf *const fdf);
