@@ -53,7 +53,7 @@ SRC_FS	 		:= cleanup.c \
 SRCS	 		:= $(SRC_FS:%.c=$(SRC_DIR)/%.c)
 OBJS			= $(SRCS:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
 
-.PHONY: all bonus clean fclean norm re test
+.PHONY: all bonus clean fclean norm re submodules test
 
 all: $(NAME)
 
@@ -63,10 +63,15 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 		@if [ ! -d $(@D) ]; then mkdir -p $(@D); fi
 		$(CC) $(CFLAGS) $(INCLUDE_FLAGS) -o $@ -c $<
 
-$(LIBFT):
+## submodules
+submodules:
+		@if [ ! -f $(LIBFT_DIR)/Makefile ] || [ ! -f $(LIBX_DIR)/Makefile ]; \
+			then git submodule update --init; fi
+
+$(LIBFT): | submodules
 		@$(MAKE) -C $(LIBFT_DIR) -j8
 
-$(LIBX):
+$(LIBX): | submodules
 		@$(MAKE) -C $(LIBX_DIR)
 
 $(NAME): $(LIBS) $(OBJS)
@@ -126,4 +131,4 @@ help:
 	{ lastLine = $$0 }' $(MAKEFILE_LIST) | sort -u
 	@printf "\n"
 
-.PHONY: all clean fclean re bonus norm help
+.PHONY: all clean fclean re bonus norm help submodules
