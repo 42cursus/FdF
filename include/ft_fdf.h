@@ -15,8 +15,14 @@
 # include <stdlib.h>
 # include <stdbool.h>
 # include <stdio.h>
+# include <X11/Xlib.h>
+# include <X11/Xutil.h>
+# include <X11/extensions/XShm.h>
 # include "libft.h"
 # include <mlx.h>
+
+typedef struct s_xvar		t_xvar;
+typedef struct s_win_list	t_win_list;
 
 # define WHITE_COLOR 0xffffff
 # define FDF_INIT_SCALE 20
@@ -79,6 +85,29 @@ typedef struct s_transform
 	t_dpoint	point;
 	double		scale;
 }	t_transform;
+
+typedef struct s_xshm
+{
+	ShmSeg	shmseg;
+	int		shmid;
+	char	*shmaddr;
+	Bool	read_only;
+}	t_xshm;
+
+typedef struct s_img
+{
+	XImage	*image;
+	Pixmap	pix;
+	GC		gc;
+	int		size_line;
+	int		bpp;
+	int		width;
+	int		height;
+	int		type;
+	int		format;
+	char	*data;
+	t_xshm	shm;
+}	t_img;
 
 typedef struct s_rect
 {

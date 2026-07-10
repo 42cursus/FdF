@@ -14,6 +14,9 @@ cmake_minimum_required(VERSION 3.8)
 
 project(FdF C)
 
+set(CMAKE_C_COMPILER clang-15)
+#set(CMAKE_C_COMPILER gcc)
+
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_THREAD_PREFER_PTHREAD TRUE)
 set(THREADS_PREFER_PTHREAD_FLAG TRUE)

@@ -14,19 +14,21 @@ NAME			:= fdf
 CC				:= cc
 INC_DIR			=  ./include
 INCLUDE_FLAGS	:= -I. -I $(INC_DIR) -I/usr/include -I./lib/mlx -I./lib/ft/include
-OPTIMIZE_FLAGS	:= -O0
+OPTIMIZE_FLAGS	:= -Og
 DEBUG_FLAGS		:= -g3 -gdwarf-3
+
 MANDATORY_FLAGS	:= -Wall -Wextra -Werror
+
 CFLAGS			= $(MANDATORY_FLAGS) $(DEBUG_FLAGS) $(OPTIMIZE_FLAGS) $(INCLUDE_FLAGS)
 
 TEST_MAPS		=  ./resources/test_maps
-LIBFT_PATH		=  ./lib/ft
-LIBFT			=  $(LIBFT_PATH)/libft.a
-LIBX_PATH		=  ./lib/mlx
-LIBX			=  $(LIBX_PATH)/libmlx.a
+LIBFT_DIR		=  ./lib/ft
+LIBFT			=  $(LIBFT_DIR)/libft.a
+LIBX_DIR		=  ./lib/mlx
+LIBX			=  $(LIBX_DIR)/libmlx.a
 LIBS			:= $(LIBX) $(LIBFT)
 
-LINK_FLAGS		:= -L $(LIBFT_PATH) -L $(LIBX_PATH) \
+LINK_FLAGS		:= -L $(LIBFT_DIR) -L $(LIBX_DIR) \
 					-lmlx -lft -lX11 -lXext -lm
 
 CTAGS			:= ctags
@@ -63,10 +65,10 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 		$(CC) $(CFLAGS) $(INCLUDE_FLAGS) -o $@ -c $<
 
 $(LIBFT):
-		@$(MAKE) -C $(LIBFT_PATH) -j8
+		@$(MAKE) -C $(LIBFT_DIR) -j8
 
 $(LIBX):
-		@$(MAKE) -C $(LIBX_PATH)
+		@$(MAKE) -C $(LIBX_DIR)
 
 $(NAME): $(LIBS) $(OBJS)
 		$(CC) $(CFLAGS) $(INCLUDE_FLAGS) -o $@ $^  $(LINK_FLAGS)
@@ -80,16 +82,49 @@ test: fdf
 		./fdf $(TEST_MAPS)/t1.fdf || true
 		./fdf $(TEST_MAPS)/t2.fdf || true
 
-clean:
-		@$(RM) -fr $(OBJ_DIR)
-		@$(MAKE) -C $(LIBFT_PATH) clean
-		@$(MAKE) -C $(LIBX_PATH) clean
+## clean_libft
+clean_libft:
+		+$(MAKE) -C $(LIBFT_DIR) clean
 
-fclean: clean
+## clean_libx
+clean_libx: $(LIBX_DIR)/Makefile.gen
+		+$(MAKE) -C $(LIBX_DIR) -f Makefile.gen clean
+		+$(MAKE) -C $(LIBX_DIR)/test -f Makefile.gen clean
+
+## fclean_libft
+fclean_libft:
+		+$(MAKE) -C $(LIBFT_DIR) fclean
+
+## fclean_libx
+fclean_libx: clean_libx
+		@$(RM) -f $(LIBX_DIR)/Makefile.gen
+		@$(RM) -f $(LIBX_DIR)/test/Makefile.gen
+
+clean: clean_libft #clean_libx
+		@if [ -d $(OBJ_DIR) ]; then $(RM) -fr $(OBJ_DIR); fi
+
+fclean: clean fclean_libft
 		@$(RM) -fr $(NAME) FdF $(BUILD_DIR) a.out
 
-re: fclean all
+re: fclean
+		+$(MAKE) all
 
 norm:
 		@norminette $(SRCS) --use-gitignore
-		@$(MAKE) -C $(LIBFT_PATH) norm
+		@$(MAKE) -C $(LIBFT_DIR) norm
+
+# Magic help adapted: from https://gitlab.com/depressiveRobot/make-help/blob/master/help.mk (MIT License)
+help:
+	@printf "Available targets:\n\n"
+	@awk -F: '/^[a-zA-Z\-_0-9%\\ ]+:/ { \
+			helpMessage = match(lastLine, /^## (.*)/); \
+			if (helpMessage) { \
+					helpCommand = $$1; \
+					helpMessage = substr(lastLine, RSTART + 3, RLENGTH); \
+					printf "  \x1b[32;01m%-35s\x1b[0m %s\n", helpCommand, helpMessage; \
+			} \
+	} \
+	{ lastLine = $$0 }' $(MAKEFILE_LIST) | sort -u
+	@printf "\n"
+
+.PHONY: all clean fclean re bonus norm help

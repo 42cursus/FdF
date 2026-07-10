@@ -11,6 +11,8 @@
 /* ************************************************************************** */
 
 #include "ft_fdf.h"
+#include <fcntl.h>
+#include <unistd.h>
 
 void	read_lines_from_file(t_fdf *fdf);
 void	push_line(t_fdf *fdf, int fd, char *line);
